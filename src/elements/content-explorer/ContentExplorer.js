@@ -389,13 +389,24 @@ class ContentExplorer extends Component<Props, State> {
         const { onNavigate, rootFolderId }: Props = this.props;
         const { id, name, boxItem }: Collection = collection;
 
-        // console.log(this.state.currentCollection);
-
+        console.log(this.state);
         // New folder state
         const newState = {
             currentCollection: collection,
             rootName: id === rootFolderId ? name : '',
         };
+
+        if (this.state.selected) {
+            const targetID = this.state.selected.id;
+            if (typeof targetID !== 'undefined') {
+                if (typeof newState.currentCollection.items !== 'undefined') {
+                    const selectedRow = newState.currentCollection.items.findIndex((i: BoxItem) => i.id === targetID);
+                    if (typeof selectedRow !== 'undefined') {
+                        newState.currentCollection.items[selectedRow].selected = true;
+                    }
+                }
+            }
+        }
 
         // Close any open modals
         this.closeModals();
@@ -407,7 +418,9 @@ class ContentExplorer extends Component<Props, State> {
                 onNavigate(cloneDeep(boxItem));
             }
         } else {
-            this.setState(newState);
+            this.setState(newState, () => {
+                console.log(this.state);
+            });
         }
     }
 
@@ -732,7 +745,6 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     unselect(fromSelect: boolean = false, item?: BoxItem, callback: Function = noop): void {
-        console.log('UNSELECT CALLED');
         const { selected, currentCollection }: State = this.state;
         if (selected) {
             const newCollection = { ...currentCollection };
@@ -743,11 +755,7 @@ class ContentExplorer extends Component<Props, State> {
                     newCollection.items[selectedRow].selected = false;
                 }
             }
-            console.log('THIS IS NEW COLLECTION IN UNSELECT');
-            console.log(newCollection);
             this.setState({ selected: undefined, currentCollection: newCollection }, () => {
-                console.log('POST UNSELECT:');
-                console.log(this.state.currentCollection);
                 if (fromSelect && item) {
                     this.select2(item, callback);
                 }
@@ -764,7 +772,6 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     select = (item: BoxItem, callback: Function = noop): void => {
-        console.log('SELECT CALLED');
         const { selected }: State = this.state;
 
         if (item === selected) {
@@ -780,32 +787,20 @@ class ContentExplorer extends Component<Props, State> {
     };
 
     select2 = (item: BoxItem, callback: Function = noop) => {
-        console.log('SELECT2 CALLED');
         const {
             currentCollection: { items = [] },
         }: State = this.state;
         const { onSelect }: Props = this.props;
 
-        const item2 = { ...item };
-        console.log('item2');
-        console.log(item2);
-        item2.selected = true;
-
-        // // ensure that only selected item is marked as selected in currentCollection
-        // const newCollection: Collection = { ...this.state.currentCollection };
-        // if (newCollection.items) {
-        //     for (let i = 0; i < newCollection.items.length; i += 1) {
-        //         newCollection.items[i].selected = newCollection.items[i].id === item.id;
-        //     }
-        // }
+        const selectedItem: BoxItem = { ...item };
+        selectedItem.selected = true;
 
         const cCollection: Collection = this.state.currentCollection;
 
-        const newCollection = { ...cCollection };
+        const newCollection: Collection = { ...cCollection };
         if (typeof cCollection.items !== 'undefined') {
             const selectedRow = cCollection.items.findIndex((i: BoxItem) => i.id === item.id);
             newCollection.items = cloneDeep(cCollection.items);
-
             if (typeof newCollection.items !== 'undefined') {
                 newCollection.items[selectedRow].selected = true;
             }
@@ -813,14 +808,9 @@ class ContentExplorer extends Component<Props, State> {
 
         const focusedRow = items.findIndex((i: BoxItem) => i.id === item.id);
 
-        console.log('THIS IS NEW COLLECTION IN SELECT');
-        console.log(newCollection);
-
-        this.setState({ focusedRow, selected: item2, currentCollection: newCollection }, () => {
-            onSelect(cloneDeep([item2]));
-            callback(item2);
-            console.log('POST SELECT:');
-            console.log(this.state.currentCollection);
+        this.setState({ currentCollection: newCollection, focusedRow, selected: selectedItem }, () => {
+            onSelect(cloneDeep([selectedItem]));
+            callback(selectedItem);
         });
     };
 
