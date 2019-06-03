@@ -389,23 +389,18 @@ class ContentExplorer extends Component<Props, State> {
         const { onNavigate, rootFolderId }: Props = this.props;
         const { id, name, boxItem }: Collection = collection;
 
-        console.log(this.state);
         // New folder state
         const newState = {
-            currentCollection: collection,
+            currentCollection: { ...collection },
             rootName: id === rootFolderId ? name : '',
         };
 
-        if (this.state.selected) {
-            const targetID = this.state.selected.id;
-            if (typeof targetID !== 'undefined') {
-                if (typeof newState.currentCollection.items !== 'undefined') {
-                    const selectedRow = newState.currentCollection.items.findIndex((i: BoxItem) => i.id === targetID);
-                    if (typeof selectedRow !== 'undefined') {
-                        newState.currentCollection.items[selectedRow].selected = true;
-                    }
-                }
-            }
+        const targetID = this.state.selected ? this.state.selected.id : null;
+
+        if (collection.items) {
+            newState.currentCollection.items = collection.items.map(obj => {
+                return { ...obj, selected: obj.id === targetID };
+            });
         }
 
         // Close any open modals
@@ -418,9 +413,7 @@ class ContentExplorer extends Component<Props, State> {
                 onNavigate(cloneDeep(boxItem));
             }
         } else {
-            this.setState(newState, () => {
-                console.log(this.state);
-            });
+            this.setState(newState);
         }
     }
 
@@ -744,18 +737,25 @@ class ContentExplorer extends Component<Props, State> {
      * @param {Function|void} [onSelect] - optional on select callback
      * @return {void}
      */
-    unselect(fromSelect: boolean = false, item?: BoxItem, callback: Function = noop): void {
-        const { selected, currentCollection }: State = this.state;
+    unselect(fromSelect: boolean = false, item: ?BoxItem = undefined, callback: Function = noop): void {
+        const {
+            selected,
+            currentCollection,
+            currentCollection: { items = [] },
+        }: State = this.state;
+
         if (selected) {
             const newCollection = { ...currentCollection };
-            if (typeof currentCollection.items !== 'undefined') {
-                const selectedRow = currentCollection.items.findIndex((i: BoxItem) => i.id === selected.id);
-                newCollection.items = cloneDeep(currentCollection.items);
-                if (typeof newCollection.items !== 'undefined') {
+            if (items) {
+                const selectedRow = items.findIndex((i: BoxItem) => i.id === selected.id);
+                if (items && selectedRow >= 0 && selectedRow < items.length) {
+                    newCollection.items = [...items];
                     newCollection.items[selectedRow].selected = false;
                 }
             }
-            this.setState({ selected: undefined, currentCollection: newCollection }, () => {
+
+            // unselect's setState must complete before select2 begins execution
+            this.setState({ currentCollection: newCollection, selected: undefined }, () => {
                 if (fromSelect && item) {
                     this.select2(item, callback);
                 }
@@ -779,7 +779,7 @@ class ContentExplorer extends Component<Props, State> {
             return;
         }
 
-        if (this.state.selected) {
+        if (selected) {
             this.unselect(true, item, callback);
         } else {
             this.select2(item, callback);
@@ -788,25 +788,20 @@ class ContentExplorer extends Component<Props, State> {
 
     select2 = (item: BoxItem, callback: Function = noop) => {
         const {
+            currentCollection,
             currentCollection: { items = [] },
         }: State = this.state;
         const { onSelect }: Props = this.props;
 
+        const newCollection: Collection = { ...currentCollection };
         const selectedItem: BoxItem = { ...item };
         selectedItem.selected = true;
 
-        const cCollection: Collection = this.state.currentCollection;
-
-        const newCollection: Collection = { ...cCollection };
-        if (typeof cCollection.items !== 'undefined') {
-            const selectedRow = cCollection.items.findIndex((i: BoxItem) => i.id === item.id);
-            newCollection.items = cloneDeep(cCollection.items);
-            if (typeof newCollection.items !== 'undefined') {
-                newCollection.items[selectedRow].selected = true;
-            }
-        }
-
         const focusedRow = items.findIndex((i: BoxItem) => i.id === item.id);
+        if (currentCollection.items && focusedRow >= 0 && focusedRow < currentCollection.items.length) {
+            newCollection.items = [...currentCollection.items];
+            newCollection.items[focusedRow].selected = true;
+        }
 
         this.setState({ currentCollection: newCollection, focusedRow, selected: selectedItem }, () => {
             onSelect(cloneDeep([selectedItem]));
