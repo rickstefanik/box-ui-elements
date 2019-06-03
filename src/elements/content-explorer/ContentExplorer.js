@@ -580,6 +580,7 @@ class ContentExplorer extends Component<Props, State> {
         }
 
         this.setState({
+            selected: undefined,
             currentCollection: this.currentUnloadedCollection(),
             currentOffset: trimmedQuery === searchQuery ? currentOffset : 0,
             searchQuery: query,
