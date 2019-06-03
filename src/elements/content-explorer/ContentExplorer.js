@@ -580,7 +580,6 @@ class ContentExplorer extends Component<Props, State> {
         }
 
         this.setState({
-            // selected: undefined,
             currentCollection: this.currentUnloadedCollection(),
             currentOffset: trimmedQuery === searchQuery ? currentOffset : 0,
             searchQuery: query,
@@ -730,12 +729,14 @@ class ContentExplorer extends Component<Props, State> {
     };
 
     /**
-     * Returns an updated collection with correct selected values,
-     * as well as what the value of state's selected object should be
+     * Returns an object with newCollection and newSelected properties.
+     * newCollection will be the given collection, with items.selected properties
+     * updated according to the given selected param. newSelected will be the selected
+     * item if it is in newCollection, otherwise undefined.
      *
      * @private
      * @param {Collection} collection - collection that needs to be updated
-     * @param {?BoxItem} selected - item that should be selected in folder
+     * @param {?BoxItem} selected - item that should be selected in that collection (if present)
      * @return {Object}
      */
     updateCollection(collection: Collection, selected: ?BoxItem): Object {
@@ -771,7 +772,6 @@ class ContentExplorer extends Component<Props, State> {
         const { currentCollection }: State = this.state;
 
         const { newCollection, newSelected } = this.updateCollection(currentCollection, null);
-
         this.setState({ currentCollection: newCollection, selected: newSelected });
     }
 
@@ -802,7 +802,6 @@ class ContentExplorer extends Component<Props, State> {
         selectedItem.selected = true;
 
         const { newCollection } = this.updateCollection(currentCollection, selectedItem);
-
         const focusedRow: number = items.findIndex((i: BoxItem) => i.id === item.id);
 
         this.setState({ currentCollection: newCollection, focusedRow, selected: selectedItem }, () => {
