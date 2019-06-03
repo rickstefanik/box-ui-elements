@@ -388,18 +388,26 @@ class ContentExplorer extends Component<Props, State> {
     fetchFolderSuccessCallback(collection: Collection, triggerNavigationEvent: boolean): void {
         const { onNavigate, rootFolderId }: Props = this.props;
         const { id, name, boxItem }: Collection = collection;
+        const { selected }: State = this.state;
 
         // New folder state
         const newState = {
+            selected: undefined,
             currentCollection: { ...collection },
             rootName: id === rootFolderId ? name : '',
         };
 
-        const targetID = this.state.selected ? this.state.selected.id : null;
+        const targetID = selected ? selected.id : null;
 
         if (collection.items) {
             newState.currentCollection.items = collection.items.map(obj => {
-                return { ...obj, selected: obj.id === targetID };
+                const ret = { ...obj, selected: obj.id === targetID };
+
+                // If the previously selected item is found in the folder, keep it as selected item
+                if (ret.id === targetID) {
+                    newState.selected = ret;
+                }
+                return ret;
             });
         }
 
@@ -508,7 +516,10 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     searchSuccessCallback = (collection: Collection) => {
-        const { currentCollection }: State = this.state;
+        const { selected }: State = this.state;
+        const targetID = selected ? selected.id : null;
+
+        const newCollection: Collection = { ...collection };
 
         // Unselect any rows that were selected
         this.unselect();
@@ -516,9 +527,23 @@ class ContentExplorer extends Component<Props, State> {
         // Close any open modals
         this.closeModals();
 
+        let newSelected;
+
+        if (collection.items) {
+            newCollection.items = collection.items.map(obj => {
+                const ret = { ...obj, selected: obj.id === targetID };
+
+                // If the previously selected item is found in the folder, keep it as selected item
+                if (ret.id === targetID) {
+                    newSelected = ret;
+                }
+                return ret;
+            });
+        }
+
         this.setState({
-            selected: undefined,
-            currentCollection: Object.assign(currentCollection, collection),
+            currentCollection: newCollection,
+            selected: newSelected,
         });
     };
 
@@ -580,11 +605,11 @@ class ContentExplorer extends Component<Props, State> {
         }
 
         this.setState({
-            selected: undefined,
-            searchQuery: query,
-            view: VIEW_SEARCH,
+            // selected: undefined,
             currentCollection: this.currentUnloadedCollection(),
             currentOffset: trimmedQuery === searchQuery ? currentOffset : 0,
+            searchQuery: query,
+            view: VIEW_SEARCH,
         });
 
         this.debouncedSearch(folderId, query);
@@ -737,7 +762,7 @@ class ContentExplorer extends Component<Props, State> {
      * @param {Function|void} [onSelect] - optional on select callback
      * @return {void}
      */
-    unselect(fromSelect: boolean = false, item: ?BoxItem = undefined, callback: Function = noop): void {
+    unselect(): void {
         const {
             currentCollection,
             currentCollection: { items = [] },
@@ -749,12 +774,7 @@ class ContentExplorer extends Component<Props, State> {
             return { ...obj, selected: false };
         });
 
-        // unselect's setState must complete before select2 begins execution
-        this.setState({ currentCollection: newCollection, selected: undefined }, () => {
-            if (fromSelect && item) {
-                this.select2(item, callback);
-            }
-        });
+        this.setState({ currentCollection: newCollection, selected: undefined });
     }
 
     /**
@@ -766,28 +786,19 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     select = (item: BoxItem, callback: Function = noop): void => {
-        const { selected }: State = this.state;
-
-        console.log('Select Called');
+        const {
+            selected,
+            currentCollection,
+            currentCollection: { items = [] },
+        }: State = this.state;
+        const { onSelect }: Props = this.props;
 
         if (item === selected) {
             callback(item);
             return;
         }
 
-        if (selected) {
-            this.unselect(true, item, callback);
-        } else {
-            this.select2(item, callback);
-        }
-    };
-
-    select2 = (item: BoxItem, callback: Function = noop) => {
-        const {
-            currentCollection,
-            currentCollection: { items = [] },
-        }: State = this.state;
-        const { onSelect }: Props = this.props;
+        this.unselect();
 
         const newCollection: Collection = { ...currentCollection };
         const selectedItem: BoxItem = { ...item };
