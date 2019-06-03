@@ -392,24 +392,14 @@ class ContentExplorer extends Component<Props, State> {
 
         // New folder state
         const newState = {
-            selected: undefined,
             currentCollection: { ...collection },
+            selected: undefined,
             rootName: id === rootFolderId ? name : '',
         };
 
-        const targetID = selected ? selected.id : null;
-
-        if (collection.items) {
-            newState.currentCollection.items = collection.items.map(obj => {
-                const ret = { ...obj, selected: obj.id === targetID };
-
-                // If the previously selected item is found in the folder, keep it as selected item
-                if (ret.id === targetID) {
-                    newState.selected = ret;
-                }
-                return ret;
-            });
-        }
+        const { newCollection, newSelected } = this.updateCollection(collection, selected);
+        newState.currentCollection = newCollection;
+        newState.selected = newSelected;
 
         // Close any open modals
         this.closeModals();
@@ -517,9 +507,6 @@ class ContentExplorer extends Component<Props, State> {
      */
     searchSuccessCallback = (collection: Collection) => {
         const { selected }: State = this.state;
-        const targetID = selected ? selected.id : null;
-
-        const newCollection: Collection = { ...collection };
 
         // Unselect any rows that were selected
         this.unselect();
@@ -527,19 +514,7 @@ class ContentExplorer extends Component<Props, State> {
         // Close any open modals
         this.closeModals();
 
-        let newSelected;
-
-        if (collection.items) {
-            newCollection.items = collection.items.map(obj => {
-                const ret = { ...obj, selected: obj.id === targetID };
-
-                // If the previously selected item is found in the folder, keep it as selected item
-                if (ret.id === targetID) {
-                    newSelected = ret;
-                }
-                return ret;
-            });
-        }
+        const { newCollection, newSelected } = this.updateCollection(collection, selected);
 
         this.setState({
             currentCollection: newCollection,
@@ -755,6 +730,36 @@ class ContentExplorer extends Component<Props, State> {
     };
 
     /**
+     * Returns an updated collection with correct selected values,
+     * as well as what the value of state's selected object should be
+     *
+     * @private
+     * @param {Collection} collection - collection that needs to be updated
+     * @param {?BoxItem} selected - item that should be selected in folder
+     * @return {Object}
+     */
+    updateCollection(collection: Collection, selected: ?BoxItem): Object {
+        const newCollection: Collection = { ...collection };
+        const targetID = selected ? selected.id : null;
+
+        const ret = { newCollection, newSelected: undefined };
+
+        if (collection.items) {
+            ret.newCollection.items = collection.items.map(obj => {
+                const item = { ...obj, selected: obj.id === targetID };
+
+                // If the previously selected item is found in the folder, keep it as selected item
+                if (item.id === targetID) {
+                    ret.newSelected = item;
+                }
+                return item;
+            });
+        }
+
+        return ret;
+    }
+
+    /**
      * Unselects an item
      *
      * @private
@@ -763,18 +768,11 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     unselect(): void {
-        const {
-            currentCollection,
-            currentCollection: { items = [] },
-        }: State = this.state;
+        const { currentCollection }: State = this.state;
 
-        const newCollection = { ...currentCollection };
+        const { newCollection, newSelected } = this.updateCollection(currentCollection, null);
 
-        newCollection.items = items.map(obj => {
-            return { ...obj, selected: false };
-        });
-
-        this.setState({ currentCollection: newCollection, selected: undefined });
+        this.setState({ currentCollection: newCollection, selected: newSelected });
     }
 
     /**
@@ -800,18 +798,12 @@ class ContentExplorer extends Component<Props, State> {
 
         this.unselect();
 
-        const newCollection: Collection = { ...currentCollection };
         const selectedItem: BoxItem = { ...item };
-
         selectedItem.selected = true;
 
-        if (items) {
-            newCollection.items = items.map(obj => {
-                return { ...obj, selected: obj.id === item.id };
-            });
-        }
+        const { newCollection } = this.updateCollection(currentCollection, selectedItem);
 
-        const focusedRow = items.findIndex((i: BoxItem) => i.id === item.id);
+        const focusedRow: number = items.findIndex((i: BoxItem) => i.id === item.id);
 
         this.setState({ currentCollection: newCollection, focusedRow, selected: selectedItem }, () => {
             onSelect(cloneDeep([selectedItem]));
