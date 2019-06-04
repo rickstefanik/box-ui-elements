@@ -7,7 +7,9 @@ const helpers = {
             },
         });
     },
-    getRow: rowNum => cy.getByDataPreview('ContentExplorer').find(`.bce-item-row-${rowNum}`),
+    getRow(rowNum) {
+        return cy.getByDataPreview('ContentExplorer').find(`.bce-item-row-${rowNum}`);
+    },
     checkRows(rowNum) {
         cy.getByDataPreview('ContentExplorer')
             .find('.ReactVirtualized__Table')
@@ -66,7 +68,7 @@ const helpers = {
     },
     clickShareButton(rowNum) {
         this.getRow(rowNum)
-            .get('.bce-more-options')
+            .find('.bce-more-options')
             .contains('Share')
             .click();
     },
@@ -97,7 +99,7 @@ const helpers = {
     },
     closePreview() {
         cy.get('.bcpr-btns')
-            .get('[aria-label="Close"]')
+            .find('[aria-label="Close"]')
             .click();
     },
 };
@@ -159,6 +161,7 @@ describe('ContentExplorer', () => {
             helpers.load();
             helpers.clickShareButton(2);
             helpers.clickCloseShareButton();
+            helpers.checkRows(2);
             helpers.selectRow(3);
             helpers.selectRow(5);
         });
@@ -194,6 +197,11 @@ describe('ContentExplorer', () => {
             helpers.clickUploadButton();
             helpers.clickCloseUploadModal();
             helpers.checkRows(5);
+            helpers.selectRow(2);
+            helpers.clickShareButton(3);
+            helpers.clickCloseShareButton();
+            helpers.checkRows(3);
+            helpers.selectRow(4);
         });
     });
 });
