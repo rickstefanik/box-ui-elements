@@ -29,6 +29,8 @@ const helpers = {
             .as('row')
             .click()
             .should('have.class', 'bce-item-row-selected');
+
+        // Whenever a row is selected, confirm that it is the only row that appears selected
         this.checkRows(rowNum);
         return cy.get('@row');
     },
@@ -71,6 +73,31 @@ const helpers = {
     clickCloseShareButton() {
         cy.get('.be-modal-btns > button')
             .contains('Close')
+            .click();
+    },
+    clickMoreOptionsButton(rowNum) {
+        this.getRow(rowNum)
+            .find('.bce-btn-more-options')
+            .click();
+    },
+    clickRenameButton() {
+        cy.get('.dropdown-menu-element')
+            .contains('Rename')
+            .click();
+    },
+    clickCloseRenameButton() {
+        cy.get('.be-modal-btns > button')
+            .contains('Cancel')
+            .click();
+    },
+    previewRow(rowNum) {
+        this.getRow(rowNum)
+            .find('.be-item-name > button')
+            .click();
+    },
+    closePreview() {
+        cy.get('.bcpr-btns')
+            .get('[aria-label="Close"]')
             .click();
     },
 };
@@ -134,6 +161,39 @@ describe('ContentExplorer', () => {
             helpers.clickCloseShareButton();
             helpers.selectRow(3);
             helpers.selectRow(5);
+        });
+
+        it('Should preview an item', () => {
+            helpers.load();
+            helpers.previewRow(4);
+            helpers.closePreview();
+            helpers.checkRows(4);
+            helpers.selectRow(6);
+            helpers.selectRow(2);
+        });
+
+        it('Should open and close rename modal', () => {
+            helpers.load();
+            helpers.selectRow(2);
+            helpers.clickMoreOptionsButton(4);
+            helpers.clickRenameButton();
+            helpers.clickCloseRenameButton();
+            helpers.checkRows(4);
+            helpers.selectRow(1);
+        });
+
+        it('Should perform multiple operations in sequence', () => {
+            helpers.load();
+            helpers.selectRow(1);
+            helpers.selectRow(4);
+            helpers.previewRow(2);
+            helpers.closePreview(2);
+            helpers.checkRows(2);
+            helpers.selectRow(5);
+            helpers.clickAddButton();
+            helpers.clickUploadButton();
+            helpers.clickCloseUploadModal();
+            helpers.checkRows(5);
         });
     });
 });
