@@ -14,12 +14,12 @@ type Props = {
 };
 
 const GridViewButton = (props: Props) => {
-    const { isGridView } = props;
+    const { isGridView, ...rest } = props;
     const icon = isGridView ? <IconGridView width={17} height={17} /> : <IconGridViewInverted width={17} height={17} />;
 
     return (
         <Tooltip text={<FormattedMessage {...messages.gridView} />}>
-            <Button className="be-btn-grid-view" aria-label={messages.gridView.defaultMessage} type="button" {...props}>
+            <Button className="be-btn-grid-view" aria-label={messages.gridView.defaultMessage} type="button" {...rest}>
                 {icon}
             </Button>
         </Tooltip>
