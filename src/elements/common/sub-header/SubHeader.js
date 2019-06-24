@@ -14,8 +14,10 @@ type Props = {
     canCreateNewFolder: boolean,
     canUpload: boolean,
     currentCollection: Collection,
+    isGridView?: boolean,
     isSmall: boolean,
     onCreate: Function,
+    onGridViewSwitch?: Function,
     onItemClick: Function,
     onSortChange: Function,
     onUpload: Function,
@@ -25,17 +27,19 @@ type Props = {
 };
 
 const SubHeader = ({
-    rootId,
-    rootName,
+    canCreateNewFolder,
+    canUpload,
+    currentCollection,
+    isGridView = false,
+    isSmall,
+    onCreate,
+    onGridViewSwitch,
     onItemClick,
     onSortChange,
-    currentCollection,
     onUpload,
-    onCreate,
-    canUpload,
-    canCreateNewFolder,
+    rootId,
+    rootName,
     view,
-    isSmall,
 }: Props) => (
     <div className="be-sub-header" data-testid="be-sub-header">
         <SubHeaderLeft
@@ -50,7 +54,9 @@ const SubHeader = ({
             canCreateNewFolder={canCreateNewFolder}
             canUpload={canUpload}
             currentCollection={currentCollection}
+            isGridView={isGridView}
             onCreate={onCreate}
+            onGridViewSwitch={onGridViewSwitch}
             onSortChange={onSortChange}
             onUpload={onUpload}
             view={view}
