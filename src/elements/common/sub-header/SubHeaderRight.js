@@ -15,6 +15,7 @@ import './SubHeaderRight.scss';
 type Props = {
     canCreateNewFolder: boolean,
     canUpload: boolean,
+    columnCount: number,
     currentCollection: Collection,
     isGridView: boolean,
     onCreate: Function,
