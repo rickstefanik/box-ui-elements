@@ -101,7 +101,7 @@ const Content = ({
         />
     );
 
-    const gridView = <div>Placeholder for grid view</div>;
+    const gridView = <div className="bdl-GridView">Placeholder for grid view</div>;
 
     const content = isGridView ? gridView : listView;
 

@@ -3,7 +3,9 @@ import utils from '../../support/utils';
 
 // <reference types="Cypress" />
 const selectedRowClassName = 'bce-item-row-selected';
-const selectedRowClassSelector = `.${selectedRowClassName}`;
+const listViewClass = 'bce-item-grid';
+const gridViewClass = 'bdl-GridView';
+
 const helpers = {
     load(additionalProps = {}) {
         cy.visit('/Elements/ContentExplorer', {
@@ -12,17 +14,20 @@ const helpers = {
             },
         });
     },
+    getSelector(className) {
+        return `.${className}`;
+    },
     getRow(rowNum) {
         return cy.getByTestId('content-explorer').find(`.bce-item-row-${rowNum}`);
     },
     checkRowSelections(selectedRow) {
         if (selectedRow) {
             cy.getByTestId('content-explorer')
-                .find(`${selectedRowClassSelector}`)
+                .find(this.getSelector(selectedRowClassName))
                 .should('have.length', 1)
                 .should('have.class', `bce-item-row-${selectedRow}`);
         } else {
-            cy.getByTestId('content-explorer').should('not.have.descendants', selectedRowClassSelector);
+            cy.getByTestId('content-explorer').should('not.have.descendants', this.getSelector(selectedRowClassName));
         }
     },
     selectRow(rowNum) {
@@ -32,6 +37,9 @@ const helpers = {
     },
     getAddButton() {
         return cy.getByAriaLabel(localize('be.add'));
+    },
+    getGridViewButton() {
+        return cy.getByAriaLabel(localize('be.gridView'));
     },
     // need exact match since 'Upload' appears elsewhere on the page
     getUploadButton() {
@@ -193,6 +201,27 @@ describe('ContentExplorer', () => {
             helpers.checkRowSelections(3);
             helpers.selectRow(4);
             helpers.checkRowSelections(4);
+        });
+    });
+
+    describe('Grid View', () => {
+        it('Should initially show list view', () => {
+            cy.getByTestId('content-explorer')
+                .find(helpers.getSelector(listViewClass))
+                .should('have.length', 1);
+            cy.getByTestId('content-explorer')
+                .find(helpers.getSelector(gridViewClass))
+                .should('have.length', 0);
+        });
+
+        it('Should switch to grid view', () => {
+            helpers.getGridViewButton().click();
+            cy.getByTestId('content-explorer')
+                .find(helpers.getSelector(listViewClass))
+                .should('have.length', 0);
+            cy.getByTestId('content-explorer')
+                .find(helpers.getSelector(gridViewClass))
+                .should('have.length', 1);
         });
     });
 });
