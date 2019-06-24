@@ -113,6 +113,7 @@ type State = {
     focusedRow: number,
     isCreateFolderModalOpen: boolean,
     isDeleteModalOpen: boolean,
+    isGridView: boolean,
     isLoading: boolean,
     isPreviewModalOpen: boolean,
     isRenameModalOpen: boolean,
@@ -218,23 +219,24 @@ class ContentExplorer extends Component<Props, State> {
         this.id = uniqueid('bce_');
 
         this.state = {
-            sortBy,
-            sortDirection,
-            rootName: '',
             currentCollection: {},
             currentOffset: initialPageSize * (initialPage - 1),
             currentPageSize: initialPageSize,
-            searchQuery: '',
-            view: VIEW_FOLDER,
-            isDeleteModalOpen: false,
-            isRenameModalOpen: false,
-            isCreateFolderModalOpen: false,
-            isShareModalOpen: false,
-            isUploadModalOpen: false,
-            isPreviewModalOpen: false,
-            isLoading: false,
             errorCode: '',
             focusedRow: 0,
+            isCreateFolderModalOpen: false,
+            isDeleteModalOpen: false,
+            isGridView: false,
+            isLoading: false,
+            isPreviewModalOpen: false,
+            isRenameModalOpen: false,
+            isShareModalOpen: false,
+            isUploadModalOpen: false,
+            rootName: '',
+            searchQuery: '',
+            sortBy,
+            sortDirection,
+            view: VIEW_FOLDER,
         };
     }
 
@@ -1221,6 +1223,11 @@ class ContentExplorer extends Component<Props, State> {
         this.setState({ currentOffset: newOffset }, this.refreshCollection);
     };
 
+    switchGridView = (): void => {
+        const { isGridView }: State = this.state;
+        this.setState({ isGridView: !isGridView });
+    };
+
     /**
      * Renders the file picker
      *
@@ -1269,6 +1276,7 @@ class ContentExplorer extends Component<Props, State> {
             currentPageSize,
             searchQuery,
             isDeleteModalOpen,
+            isGridView,
             isRenameModalOpen,
             isShareModalOpen,
             isUploadModalOpen,
@@ -1302,6 +1310,7 @@ class ContentExplorer extends Component<Props, State> {
                         <SubHeader
                             view={view}
                             rootId={rootFolderId}
+                            isGridView={isGridView}
                             isSmall={isSmall}
                             rootName={rootName}
                             currentCollection={currentCollection}
@@ -1311,10 +1320,12 @@ class ContentExplorer extends Component<Props, State> {
                             onCreate={this.createFolder}
                             onItemClick={this.fetchFolder}
                             onSortChange={this.sort}
+                            onGridViewSwitch={this.switchGridView}
                         />
                         <Content
                             view={view}
                             rootId={rootFolderId}
+                            isGridView={isGridView}
                             isSmall={isSmall}
                             isMedium={isMedium}
                             isTouch={isTouch}

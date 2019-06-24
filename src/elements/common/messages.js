@@ -122,6 +122,11 @@ const messages = defineMessages({
         description: 'Label for add action',
         defaultMessage: 'Add',
     },
+    gridView: {
+        id: 'be.gridView',
+        description: 'Label for grid view action',
+        defaultMessage: 'Grid View',
+    },
     sort: {
         id: 'be.sort',
         description: 'Label for sort action',
