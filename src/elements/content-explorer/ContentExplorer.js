@@ -108,6 +108,7 @@ type Props = {
 };
 
 type State = {
+    columnCount: number,
     currentCollection: Collection,
     currentOffset: number,
     currentPageSize: number,
@@ -115,6 +116,7 @@ type State = {
     focusedRow: number,
     isCreateFolderModalOpen: boolean,
     isDeleteModalOpen: boolean,
+    isGridView: boolean,
     isLoading: boolean,
     isPreviewModalOpen: boolean,
     isRenameModalOpen: boolean,
@@ -221,6 +223,7 @@ class ContentExplorer extends Component<Props, State> {
         this.id = uniqueid('bce_');
 
         this.state = {
+            columnCount: 5,
             currentCollection: {},
             currentOffset: initialPageSize * (initialPage - 1),
             currentPageSize: initialPageSize,
@@ -1226,6 +1229,21 @@ class ContentExplorer extends Component<Props, State> {
     };
 
     /**
+     * Toggle grid view
+     *
+     * @private
+     * @return {void}
+     */
+    switchGridView = (): void => {
+        const { isGridView }: State = this.state;
+        this.setState({ isGridView: !isGridView });
+    };
+
+    slotRenderer = (slotIndex: number) => {
+        return <div>{slotIndex}</div>;
+    };
+
+    /**
      * Change the current view mode
      *
      * @param {ViewMode} viewMode - the new view mode
@@ -1284,6 +1302,7 @@ class ContentExplorer extends Component<Props, State> {
             currentPageSize,
             searchQuery,
             isDeleteModalOpen,
+            isGridView,
             isRenameModalOpen,
             isShareModalOpen,
             isUploadModalOpen,
@@ -1293,6 +1312,7 @@ class ContentExplorer extends Component<Props, State> {
             isLoading,
             errorCode,
             focusedRow,
+            columnCount,
         }: State = this.state;
 
         const { id, offset, permissions, totalCount }: Collection = currentCollection;
@@ -1318,6 +1338,7 @@ class ContentExplorer extends Component<Props, State> {
                             view={view}
                             viewMode={viewMode}
                             rootId={rootFolderId}
+                            isGridView={isGridView}
                             isSmall={isSmall}
                             rootName={rootName}
                             currentCollection={currentCollection}
@@ -1333,6 +1354,7 @@ class ContentExplorer extends Component<Props, State> {
                             view={view}
                             viewMode={viewMode}
                             rootId={rootFolderId}
+                            isGridView={isGridView}
                             isSmall={isSmall}
                             isMedium={isMedium}
                             isTouch={isTouch}
@@ -1354,6 +1376,8 @@ class ContentExplorer extends Component<Props, State> {
                             onItemShare={this.share}
                             onItemPreview={this.preview}
                             onSortChange={this.sort}
+                            columnCount={columnCount}
+                            slotRenderer={this.slotRenderer}
                         />
                         <Footer>
                             <Pagination
