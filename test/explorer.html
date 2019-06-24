@@ -74,6 +74,13 @@
                 const { ContentExplorer } = Box;
                 const token = document.querySelector('.token').value || localStorage.getItem('token');
                 const folderId = document.querySelector('.folder').value || localStorage.getItem('folder');
+                const features = {
+                    contentExplorer: {
+                        gridView: {
+                            buttonVisible: true,
+                        },
+                    },
+                };
 
                 localStorage.setItem('token', token);
                 localStorage.setItem('folder', folderId);
@@ -122,8 +129,8 @@
                 });
                 document.querySelector('.explorer1').innerHTML = '';
                 explorer1.show(folderId, token, {
-                    container: '.explorer1',
                     autoFocus: true,
+                    container: '.explorer1',
                     contentPreviewProps: {
                         contentSidebarProps: {
                             hasActivityFeed: true,
@@ -135,6 +142,7 @@
                             onError: error => console.log(error),
                         },
                     },
+                    features,
                 });
 
                 const explorer2 = new ContentExplorer();
@@ -142,6 +150,7 @@
                 explorer2.show(folderId, token, {
                     container: '.explorer2',
                     canCreateNewFolder: false,
+                    features,
                     logoUrl: 'https://d30y9cdsu7xlg0.cloudfront.net/png/12458-200.png',
                 });
 
@@ -150,6 +159,7 @@
                 explorer2.show(folderId, token, {
                     container: '.explorer3',
                     canUpload: false,
+                    features,
                     logoUrl: 'box',
                 });
             }
