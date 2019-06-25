@@ -1,6 +1,5 @@
 import localize from '../../support/i18n';
 import utils from '../../support/utils';
-import features from '../../../examples/src/features';
 
 // <reference types="Cypress" />
 const selectedRowClassName = 'bce-item-row-selected';
@@ -16,15 +15,11 @@ const gridViewOn = {
 };
 
 const helpers = {
-    load(
-        { additionalProps, additionalFeatures } = {
-            additionalFeatures: { ...gridViewOn },
-        },
-    ) {
+    load({ props, features } = {}) {
         cy.visit('/Elements/ContentExplorer', {
             onBeforeLoad: contentWindow => {
-                contentWindow.PROPS = additionalProps;
-                contentWindow.FEATURES = { ...features, ...additionalFeatures };
+                contentWindow.PROPS = props;
+                contentWindow.FEATURES = features;
             },
         });
     },
@@ -220,7 +215,7 @@ describe('ContentExplorer', () => {
 
     describe('Grid View', () => {
         it('Should initially show list view', () => {
-            helpers.load();
+            helpers.load({ features: gridViewOn });
             cy.getByTestId('content-explorer')
                 .find(helpers.getSelector(listViewClass))
                 .should('have.length', 1);
@@ -230,7 +225,7 @@ describe('ContentExplorer', () => {
         });
 
         it('Should switch to grid view', () => {
-            helpers.load();
+            helpers.load({ features: gridViewOn });
             helpers.getGridViewButton().click();
             cy.getByTestId('content-explorer')
                 .find(helpers.getSelector(listViewClass))
