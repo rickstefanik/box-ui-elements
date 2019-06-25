@@ -14,7 +14,7 @@ export default {
     },
     contentExplorer: {
         gridView: {
-            buttonVisible: true,
+            buttonVisible: false,
         },
     },
 };
