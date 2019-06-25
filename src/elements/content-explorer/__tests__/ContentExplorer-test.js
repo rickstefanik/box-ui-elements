@@ -39,4 +39,25 @@ describe('elements/content-explorer/ContentExplorer', () => {
             expect(instance.fetchFolder).toHaveBeenCalledWith('123', false);
         });
     });
+
+    describe('render()', () => {
+        test('should render correctly with default props', () => {
+            const wrapper = getWrapper({});
+            expect(wrapper).toMatchSnapshot();
+        });
+
+        test('should render correctly with no permissions', () => {
+            const wrapper = getWrapper({
+                canDownload: false,
+                canDelete: false,
+                canUpload: false,
+                canRename: false,
+                canShare: false,
+                canPreview: false,
+                canSetShareAccess: false,
+                canCreateNewFolder: false,
+            });
+            expect(wrapper).toMatchSnapshot();
+        });
+    });
 });
