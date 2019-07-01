@@ -41,6 +41,15 @@ class GridView extends React.Component<Props> {
         fixedWidth: true,
     });
 
+    resizeRows = () => {
+        this.cache.clearAll();
+        this.forceUpdate();
+    };
+
+    componentDidMount = () => {
+        this.resizeRows();
+    };
+
     componentDidUpdate(prevProps: Props) {
         const { columnCount, width } = this.props;
 
@@ -48,8 +57,7 @@ class GridView extends React.Component<Props> {
         // row sizes or the parent width change. If omitted, rows are sized
         // incorrectly resulting in gaps or content overlap.
         if (columnCount !== prevProps.columnCount || width !== prevProps.width) {
-            this.cache.clearAll();
-            this.forceUpdate();
+            this.resizeRows();
         }
     }
 
