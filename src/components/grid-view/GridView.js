@@ -111,7 +111,6 @@ class GridView extends React.Component<Props> {
         return (
             <Table
                 className={classNames('bdl-GridView', `bdl-GridView--columns-${columnCount}`)}
-                deferredMeasurementCache={this.cache}
                 disableHeader
                 height={height}
                 rowCount={rowCount}
