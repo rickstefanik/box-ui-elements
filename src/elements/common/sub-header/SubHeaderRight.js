@@ -17,7 +17,6 @@ type Props = {
     canCreateNewFolder: boolean,
     canUpload: boolean,
     currentCollection: Collection,
-    isGridView: boolean,
     onCreate: Function,
     onGridViewSwitch?: Function,
     onSortChange: Function,

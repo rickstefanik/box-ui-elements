@@ -123,7 +123,6 @@ type State = {
     focusedRow: number,
     isCreateFolderModalOpen: boolean,
     isDeleteModalOpen: boolean,
-    isGridView: boolean,
     isLoading: boolean,
     isPreviewModalOpen: boolean,
     isRenameModalOpen: boolean,
@@ -1236,16 +1235,6 @@ class ContentExplorer extends Component<Props, State> {
     };
 
     /**
-     * Toggle grid view
-     *
-     * @return {void}
-     */
-    switchGridView = (): void => {
-        const { isGridView }: State = this.state;
-        this.setState({ isGridView: !isGridView });
-    };
-
-    /**
      * Renderer used for cards in grid view
      *
      * @param {number} slotIndex - index of item in currentCollection.items
@@ -1361,7 +1350,6 @@ class ContentExplorer extends Component<Props, State> {
             currentPageSize,
             searchQuery,
             isDeleteModalOpen,
-            isGridView,
             isRenameModalOpen,
             isShareModalOpen,
             isUploadModalOpen,
@@ -1397,7 +1385,6 @@ class ContentExplorer extends Component<Props, State> {
                             view={view}
                             viewMode={viewMode}
                             rootId={rootFolderId}
-                            isGridView={isGridView}
                             isSmall={isSmall}
                             rootName={rootName}
                             currentCollection={currentCollection}
@@ -1413,7 +1400,6 @@ class ContentExplorer extends Component<Props, State> {
                             view={view}
                             viewMode={viewMode}
                             rootId={rootFolderId}
-                            isGridView={isGridView}
                             isSmall={isSmall}
                             isMedium={isMedium}
                             isTouch={isTouch}
