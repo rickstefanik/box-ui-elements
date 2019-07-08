@@ -15,6 +15,7 @@ import {
     FIELD_AUTHENTICATED_DOWNLOAD_URL,
     FIELD_EXTENSION,
     FIELD_IS_DOWNLOAD_AVAILABLE,
+    FIELD_REPRESENTATIONS,
     X_REP_HINTS,
 } from '../constants';
 import Item from './Item';
@@ -197,6 +198,88 @@ class File extends Item {
             }
 
             this.successHandler(cache.get(key));
+        } catch (e) {
+            this.errorHandler(e);
+        }
+    }
+
+    /**
+     * Get the thumbnail url for a given BoxItem.  The function will attempt
+     * to fetch a jpg thumbnail of the given dimensions.  If this fails, the function
+     * will attempt to fectch a 1024x1024 png of the first page of the file as a fallback.
+     *
+     * @param {BoxItem} item - item whose thumbnail should be fetched
+     * @param {string} dimensions - desired dimensions of thumbnail. Acceptable dimensions
+     * for a jpg are: "32x32", "94x94", "160x160", "320x320", "1024x1024", "2048x2048".
+     * @param {Function} successCallback - function to call with the thumbnail url. The thumbnail
+     * url will be null if one could not be fetched.
+     * @param {Function} errorCallback - Function to call with errors
+     * @return {void}
+     */
+    getFileThumbnail(
+        item: BoxItem,
+        dimensions: string,
+        successCallback: Function,
+        errorCallback: ElementsErrorCallback,
+    ): void {
+        if (this.isDestroyed()) {
+            return;
+        }
+
+        this.successCallback = successCallback;
+        this.errorCallback = errorCallback;
+
+        // no need to make api call since folders do not have thumbnails
+        if (item.type === 'folder') {
+            this.successHandler(null);
+        }
+
+        // TODO: implement cache for recently fetched thumbnails
+
+        const { id } = item;
+        const newUrl = this.getUrl(id);
+
+        const access_token = this.xhr.token;
+        if (!access_token) {
+            return;
+        }
+
+        const xhrOptions: Object = {
+            url: newUrl,
+            headers: {
+                // API will return first representation it finds, so 1024x1024 png is fallback.
+                'X-Rep-Hints': `[jpg?dimensions=${dimensions},png?dimensions=1024x1024]`,
+            },
+            params: {
+                fields: FIELD_REPRESENTATIONS,
+            },
+        };
+        try {
+            this.xhr
+                .get(xhrOptions)
+                .then(response => {
+                    const entries = response.data.representations.entries;
+
+                    if (!entries.length || entries[0].status.state !== 'success') {
+                        return null;
+                    }
+
+                    // if unable to fetch jpg thumbnail, grab png of first page of file.
+                    // Asset path for thumbnail is simply empty string.
+                    const asset_path = entries[0].representation === 'jpg' ? '' : '1.png';
+
+                    const thumbnailLink = entries[0].content.url_template.replace('{+asset_path}', asset_path);
+
+                    // use token in URL for authorization
+                    return `${thumbnailLink}?access_token=${access_token}`;
+                })
+                .then(thumbnailUrl => {
+                    // TODO: Calling this.successHandler(thumbnailUrl) leads to no thumbnails loading.
+                    // Investigate this.
+                    if (!this.isDestroyed() && typeof this.successCallback === 'function') {
+                        successCallback(thumbnailUrl);
+                    }
+                });
         } catch (e) {
             this.errorHandler(e);
         }

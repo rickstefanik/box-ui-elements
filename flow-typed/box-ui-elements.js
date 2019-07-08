@@ -397,6 +397,7 @@ type BoxItem = {
     selected?: boolean,
     shared_link?: SharedLink,
     size?: number,
+    thumbnailUrl?: string,
     type?: ItemType,
     url?: string,
     version_limit?: ?number,

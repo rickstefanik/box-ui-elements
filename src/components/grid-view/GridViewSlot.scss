@@ -18,18 +18,28 @@
         padding-bottom: 65%;
         position: relative;
 
-        .bdl-GridViewSlot-itemIcon {
-            align-items: center;
+        .bdl-GridViewSlot-item {
             bottom: 0;
-            display: flex;
-            height: 50%;
-            justify-content: center;
             left: 0;
             margin: auto;
             position: absolute;
             right: 0;
             top: 0;
-            width: 50%;
+
+            &.bdl-GridViewSlot-itemIcon {
+                align-items: center;
+                display: flex;
+                height: 50%;
+                justify-content: center;
+                width: 50%;
+            }
+
+            &.bdl-GridViewSlot-postLoadThumbnail {
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-size: contain;
+                width: 100%;
+            }
         }
     }
 }

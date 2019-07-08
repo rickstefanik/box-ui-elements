@@ -397,6 +397,40 @@ class ContentExplorer extends Component<Props, State> {
     };
 
     /**
+     * Call Box Representations API to fetch thumbnails of all files in collection.
+     * The thumbnailUrls array in state will be populated with urls to thumbnails.
+     * If a thumbnail could not be found, that item's entry in thumbnailUrls will be null.
+     *
+     * @private
+     * @param {Array<BoxItem>} items - item collection object
+     * @param {string} dimensions - desired dimensions of thumbnail. Acceptable dimensions
+     * for a jpg are: "32x32", "94x94", "160x160", "320x320", "1024x1024", "2048x2048".
+     * @return {Promise<void>}
+     */
+    async fetchThumbnailUrls(items: Array<BoxItem>, dimensions: string): Promise<void> {
+        const fileAPI = this.api.getFileAPI();
+
+        // not using Promise.all since thumbnails should load one at a time
+        items.forEach((item, index) => {
+            new Promise(resolve => {
+                fileAPI.getFileThumbnail(
+                    item,
+                    dimensions,
+                    resolve,
+                    // TODO: assign appropriate error callback
+                    noop,
+                );
+            }).then(data => {
+                const currentCollection = { ...this.state.currentCollection };
+                if (currentCollection.items) {
+                    currentCollection.items[index].thumbnailUrl = data;
+                    this.setState({ currentCollection });
+                }
+            });
+        });
+    }
+
+    /**
      * Folder fetch success callback
      *
      * @private
@@ -406,11 +440,15 @@ class ContentExplorer extends Component<Props, State> {
      */
     fetchFolderSuccessCallback(collection: Collection, triggerNavigationEvent: boolean): void {
         const { onNavigate, rootFolderId }: Props = this.props;
-        const { id, name, boxItem }: Collection = collection;
+        const { boxItem, id, items, name }: Collection = collection;
         const { selected }: State = this.state;
         const rootName = id === rootFolderId ? name : '';
 
         this.updateCollection(collection, selected);
+
+        if (items) {
+            this.fetchThumbnailUrls(items, '1024x1024');
+        }
 
         // Close any open modals
         this.closeModals();
@@ -517,7 +555,12 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     searchSuccessCallback = (collection: Collection) => {
-        const { selected }: State = this.state;
+        const { currentCollection, selected }: State = this.state;
+        const { items } = currentCollection;
+
+        if (items) {
+            this.fetchThumbnailUrls(items, '1024x1024');
+        }
 
         // Unselect any rows that were selected
         this.unselect();
@@ -605,8 +648,14 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     recentsSuccessCallback(collection: Collection, triggerNavigationEvent: boolean) {
+        const { items } = collection;
+
         // Unselect any rows that were selected
         this.unselect();
+
+        if (items) {
+            this.fetchThumbnailUrls(items, '1024x1024');
+        }
 
         // Set the new state and focus the grid for tabbing
         const newState = { currentCollection: collection };
@@ -1254,6 +1303,7 @@ class ContentExplorer extends Component<Props, State> {
         if (!item) {
             return <div />;
         }
+        const url = getProp(currentCollection, `items[${slotIndex}].thumbnailUrl`);
 
         const moreOptionsCell = moreOptionsCellRenderer(
             canPreview,
@@ -1282,10 +1332,19 @@ class ContentExplorer extends Component<Props, State> {
 
         const dateCell = dateCellRenderer();
 
+        const className = classNames(
+            'bdl-GridViewSlot-item',
+            { 'bdl-GridViewSlot-postLoadThumbnail': url },
+            { 'bdl-GridViewSlot-itemIcon': !url },
+        );
         return (
             <div>
                 <div className="bdl-GridViewSlot-itemThumbnail">
-                    <div className="bdl-GridViewSlot-itemIcon"> {getIcon(128, item)} </div>
+                    {url ? (
+                        <div className={className} style={{ backgroundImage: `url("${url}")` }} />
+                    ) : (
+                        <div className={className}> {getIcon(128, item)} </div>
+                    )}
                 </div>
                 <div>
                     {nameCell({ rowData: item })}
