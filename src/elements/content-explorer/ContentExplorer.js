@@ -1308,8 +1308,8 @@ class ContentExplorer extends Component<Props, State> {
     };
 
     /**
-     * Determine the maximum number of columns for the
-     * current width of the ContentExplorer
+     * Determine the maximum number of columns based on the
+     * current width of the ContentExplorer.
      *
      * @private
      * @return {number} - max number of columns
