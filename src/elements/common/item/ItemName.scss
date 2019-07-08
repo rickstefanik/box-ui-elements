@@ -4,4 +4,12 @@
     outline: none;
     text-align: left;
     white-space: nowrap;
+    width: 100%;
+
+    .bdl-ItemName-ellipsis {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }

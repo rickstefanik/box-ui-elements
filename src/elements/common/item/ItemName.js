@@ -31,7 +31,7 @@ const ItemName = ({ item, onClick, onFocus, canPreview, isTouch }: Props) => {
             onFocus={onItemFocus}
             type="button"
         >
-            {name}
+            <span className="bdl-ItemName-ellipsis"> {name} </span>
         </PlainButton>
     ) : (
         <span className="be-item-label">{name}</span>

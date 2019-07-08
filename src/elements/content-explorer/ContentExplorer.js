@@ -137,6 +137,8 @@ type State = {
     viewMode: ViewMode,
 };
 
+type refType<T> = { current: null | T };
+
 class ContentExplorer extends Component<Props, State> {
     id: string;
 
@@ -147,6 +149,8 @@ class ContentExplorer extends Component<Props, State> {
     props: Props;
 
     table: any;
+
+    contentExplorerRef: refType<HTMLElement>;
 
     rootElement: HTMLElement;
 
@@ -227,6 +231,8 @@ class ContentExplorer extends Component<Props, State> {
         });
 
         this.id = uniqueid('bce_');
+
+        this.contentExplorerRef = React.createRef();
 
         this.state = {
             columnCount: 5,
@@ -1282,11 +1288,11 @@ class ContentExplorer extends Component<Props, State> {
                     <div className="bdl-GridView-itemIcon"> {getIcon(128, item)} </div>
                 </div>
                 <div>
-                    {item && nameCell({ rowData: item })}
+                    {nameCell({ rowData: item })}
                     <div> {getSize(item.size)} </div>
-                    {item && dateCell({ dataKey: '', rowData: item })}
+                    {dateCell({ dataKey: '', rowData: item })}
                 </div>
-                {item && moreOptionsCell({ rowData: item })}
+                {moreOptionsCell({ rowData: item })}
             </div>
         );
     };
@@ -1299,6 +1305,24 @@ class ContentExplorer extends Component<Props, State> {
      */
     changeViewMode = (viewMode: ViewMode): void => {
         this.setState({ viewMode });
+    };
+
+    /**
+     * Determine the maximum number of columns for the
+     * current width of the ContentExplorer
+     *
+     * @private
+     * @return {number} - max number of columns
+     */
+    getMaxColumns = (): number => {
+        const clientWidth = getProp(this.contentExplorerRef, 'current.clientWidth', 0);
+        if (clientWidth < 700) {
+            return 1;
+        }
+        if (clientWidth < 1400) {
+            return 3;
+        }
+        return 5;
     };
 
     /**
@@ -1367,13 +1391,19 @@ class ContentExplorer extends Component<Props, State> {
         const styleClassName = classNames('be bce', className);
         const allowUpload: boolean = canUpload && !!can_upload;
         const allowCreate: boolean = canCreateNewFolder && !!can_upload;
+        const maxColumns: number = this.getMaxColumns();
 
         /* eslint-disable jsx-a11y/no-static-element-interactions */
         /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
         return (
             <Internationalize language={language} messages={messages}>
                 <div id={this.id} className={styleClassName} ref={measureRef} data-testid="content-explorer">
-                    <div className="be-app-element" onKeyDown={this.onKeyDown} tabIndex={0}>
+                    <div
+                        className="be-app-element"
+                        onKeyDown={this.onKeyDown}
+                        ref={this.contentExplorerRef}
+                        tabIndex={0}
+                    >
                         <Header
                             view={view}
                             isSmall={isSmall}
@@ -1421,7 +1451,7 @@ class ContentExplorer extends Component<Props, State> {
                             onItemShare={this.share}
                             onItemPreview={this.preview}
                             onSortChange={this.sort}
-                            columnCount={columnCount}
+                            columnCount={columnCount < maxColumns ? columnCount : maxColumns}
                             slotRenderer={this.slotRenderer}
                         />
                         <Footer>
