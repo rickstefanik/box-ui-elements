@@ -1284,8 +1284,8 @@ class ContentExplorer extends Component<Props, State> {
 
         return (
             <div>
-                <div className="bdl-GridView-itemThumbnail">
-                    <div className="bdl-GridView-itemIcon"> {getIcon(128, item)} </div>
+                <div className="bdl-GridViewSlot-itemThumbnail">
+                    <div className="bdl-GridViewSlot-itemIcon"> {getIcon(128, item)} </div>
                 </div>
                 <div>
                     {nameCell({ rowData: item })}
