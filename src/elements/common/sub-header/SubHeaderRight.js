@@ -18,7 +18,6 @@ type Props = {
     canUpload: boolean,
     currentCollection: Collection,
     onCreate: Function,
-    onGridViewSwitch?: Function,
     onSortChange: Function,
     onUpload: Function,
     onViewModeChange?: (viewMode: ViewMode) => void,
