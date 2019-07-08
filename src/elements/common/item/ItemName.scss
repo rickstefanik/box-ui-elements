@@ -4,4 +4,13 @@
     outline: none;
     text-align: left;
     white-space: nowrap;
+
+    &.be-item-label--wide {
+        width: 100%;
+    }
+
+    .bdl-ItemName-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }

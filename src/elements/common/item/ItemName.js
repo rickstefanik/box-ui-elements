@@ -25,13 +25,13 @@ const ItemName = ({ item, onClick, onFocus, canPreview, isTouch }: Props) => {
 
     return type === TYPE_FOLDER || (!isTouch && (type === TYPE_WEBLINK || canPreview)) ? (
         <PlainButton
-            className="be-item-label"
+            className="be-item-label be-item-label--wide"
             data-testid="be-item-name"
             onClick={onItemClick}
             onFocus={onItemFocus}
             type="button"
         >
-            {name}
+            <div className="bdl-ItemName-text"> {name} </div>
         </PlainButton>
     ) : (
         <span className="be-item-label">{name}</span>
