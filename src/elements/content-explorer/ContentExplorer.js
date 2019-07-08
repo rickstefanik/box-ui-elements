@@ -1451,7 +1451,7 @@ class ContentExplorer extends Component<Props, State> {
                             onItemShare={this.share}
                             onItemPreview={this.preview}
                             onSortChange={this.sort}
-                            columnCount={columnCount < maxColumns ? columnCount : maxColumns}
+                            columnCount={Math.min(columnCount, maxColumns)}
                             slotRenderer={this.slotRenderer}
                         />
                         <Footer>

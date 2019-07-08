@@ -2,13 +2,11 @@
 @import '../../styles/variables';
 
 .bdl-GridView {
-    // margin: 20px 0 0;
     padding: 0 5px;
 
     .bdl-GridView-row {
         display: flex;
         justify-content: space-between;
-        padding-bottom: 0;
     }
 
     &.bdl-GridView--columns-1 .bdl-GridViewSlot {
