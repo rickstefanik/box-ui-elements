@@ -233,6 +233,7 @@ class File extends Item {
         // no need to make api call since folders do not have thumbnails
         if (item.type === 'folder') {
             this.successHandler(null);
+            return;
         }
 
         const { id } = item;
