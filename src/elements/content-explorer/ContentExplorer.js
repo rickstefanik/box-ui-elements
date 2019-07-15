@@ -49,6 +49,7 @@ import {
     VIEW_ERROR,
     VIEW_RECENTS,
     VIEW_MODE_LIST,
+    VIEW_MODE_GRID,
     TYPE_FILE,
     TYPE_WEBLINK,
     TYPE_FOLDER,
@@ -435,12 +436,12 @@ class ContentExplorer extends Component<Props, State> {
     fetchFolderSuccessCallback(collection: Collection, triggerNavigationEvent: boolean): void {
         const { onNavigate, rootFolderId }: Props = this.props;
         const { boxItem, id, items, name }: Collection = collection;
-        const { selected }: State = this.state;
+        const { selected, viewMode }: State = this.state;
         const rootName = id === rootFolderId ? name : '';
 
         this.updateCollection(collection, selected);
 
-        if (items) {
+        if (viewMode === VIEW_MODE_GRID && items) {
             this.fetchThumbnailUrls(items, '1024x1024');
         }
 
@@ -549,10 +550,10 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     searchSuccessCallback = (collection: Collection) => {
-        const { currentCollection, selected }: State = this.state;
+        const { currentCollection, selected, viewMode }: State = this.state;
         const { items } = currentCollection;
 
-        if (items) {
+        if (viewMode === VIEW_MODE_GRID && items) {
             this.fetchThumbnailUrls(items, '1024x1024');
         }
 
@@ -642,12 +643,13 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     recentsSuccessCallback(collection: Collection, triggerNavigationEvent: boolean) {
+        const { viewMode } = this.state;
         const { items } = collection;
 
         // Unselect any rows that were selected
         this.unselect();
 
-        if (items) {
+        if (viewMode === VIEW_MODE_GRID && items) {
             this.fetchThumbnailUrls(items, '1024x1024');
         }
 
@@ -1357,6 +1359,10 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     changeViewMode = (viewMode: ViewMode): void => {
+        const { items } = this.state.currentCollection;
+        if (viewMode === VIEW_MODE_GRID && items) {
+            this.fetchThumbnailUrls(items, '1024x1024');
+        }
         this.setState({ viewMode });
     };
 
