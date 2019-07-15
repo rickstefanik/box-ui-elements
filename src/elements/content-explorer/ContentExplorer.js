@@ -405,9 +405,9 @@ class ContentExplorer extends Component<Props, State> {
      * @param {Array<BoxItem>} items - item collection object
      * @param {string} dimensions - desired dimensions of thumbnail. Acceptable dimensions
      * for a jpg are: "32x32", "94x94", "160x160", "320x320", "1024x1024", "2048x2048".
-     * @return {Promise<void>}
+     * @return {void}
      */
-    async fetchThumbnailUrls(items: Array<BoxItem>, dimensions: string): Promise<void> {
+    fetchThumbnailUrls(items: Array<BoxItem>, dimensions: string): void {
         const fileAPI = this.api.getFileAPI();
 
         // not using Promise.all since thumbnails should load one at a time
