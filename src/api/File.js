@@ -5,6 +5,7 @@
  */
 
 import queryString from 'query-string';
+import getProp from 'lodash/get';
 import { findMissingProperties, fillMissingProperties } from '../utils/fields';
 import { getTypedFileId } from '../utils/file';
 import { getBadItemError, getBadPermissionsError } from '../utils/error';
@@ -234,9 +235,15 @@ class File extends Item {
             this.successHandler(null);
         }
 
-        // TODO: implement cache for recently fetched thumbnails
-
         const { id } = item;
+        const cache: APICache = this.getCache();
+        const key: string = this.getCacheKey(`_thumbnail_${id}`);
+
+        if (cache.has(key)) {
+            this.successHandler(cache.get(key));
+            return;
+        }
+
         const newUrl = this.getUrl(id);
 
         const access_token = this.xhr.token;
@@ -260,7 +267,7 @@ class File extends Item {
                 .then(response => {
                     const entries = response.data.representations.entries;
 
-                    if (!entries.length || entries[0].status.state !== 'success') {
+                    if (getProp(entries, '[0].status.state') !== 'success') {
                         return null;
                     }
 
@@ -274,6 +281,7 @@ class File extends Item {
                     return `${thumbnailLink}?access_token=${access_token}`;
                 })
                 .then(thumbnailUrl => {
+                    cache.set(key, thumbnailUrl);
                     // TODO: Calling this.successHandler(thumbnailUrl) leads to no thumbnails loading.
                     // Investigate this.
                     if (!this.isDestroyed() && typeof this.successCallback === 'function') {
