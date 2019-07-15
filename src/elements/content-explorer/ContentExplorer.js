@@ -413,13 +413,7 @@ class ContentExplorer extends Component<Props, State> {
         // not using Promise.all since thumbnails should load one at a time
         items.forEach((item, index) => {
             new Promise(resolve => {
-                fileAPI.getFileThumbnail(
-                    item,
-                    dimensions,
-                    resolve,
-                    // TODO: assign appropriate error callback
-                    noop,
-                );
+                fileAPI.getFileThumbnail(item, dimensions, resolve, this.errorCallback);
             }).then(data => {
                 const currentCollection = { ...this.state.currentCollection };
                 if (currentCollection.items) {
