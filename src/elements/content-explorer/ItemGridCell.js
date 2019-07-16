@@ -33,7 +33,7 @@ const ItemGridCell = ({
         { 'bce-ItemGridCell-item--itemIcon': !url },
     );
     return (
-        <figure>
+        <figure className="bce-ItemGridCell-figure">
             <div className="bce-ItemGridCell-itemThumbnail">
                 {url ? (
                     <div className={itemClassName} style={{ backgroundImage: `url("${url}")` }} />

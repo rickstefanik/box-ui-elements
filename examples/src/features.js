@@ -14,7 +14,7 @@ export default {
     },
     contentExplorer: {
         gridView: {
-            enabled: false,
+            enabled: true,
         },
     },
 };

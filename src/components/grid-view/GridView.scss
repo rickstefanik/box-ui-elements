@@ -43,6 +43,25 @@
     padding: 15px;
     white-space: normal;
 
+    &:hover,
+    &:active,
+    &:focus {
+        background-color: $bdl-light-blue-05;
+
+        .bce-btn-more-options {
+            background-color: $bdl-light-blue-05;
+        }
+    }
+
+    &.bdl-GridView-slot--selected {
+        background-color: $bdl-light-blue-10;
+        border-color: $bdl-dark-blue-50;
+
+        .bce-btn-more-options {
+            background-color: $bdl-light-blue-10;
+        }
+    }
+
     & + & {
         margin-left: 10px;
     }

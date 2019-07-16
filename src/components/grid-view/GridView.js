@@ -22,6 +22,7 @@ type Props = {
     columnCount: number,
     currentCollection: Collection,
     height: number,
+    onItemSelect: (item: BoxItem, callback: Function) => void,
     slotRenderer: (slotIndex: number) => ?React.Element<any>,
     width: number,
 };
@@ -50,7 +51,7 @@ class GridView extends React.Component<Props> {
     }
 
     cellRenderer = ({ dataKey, parent, rowIndex }: TableCellRendererParams) => {
-        const { columnCount, currentCollection, slotRenderer } = this.props;
+        const { columnCount, currentCollection, onItemSelect, slotRenderer } = this.props;
         const count = getProp(currentCollection, 'items.length', 0);
         const contents = [];
 
@@ -61,10 +62,17 @@ class GridView extends React.Component<Props> {
             // using item's id as key is important for renrendering.  React Virtualized Table rerenders
             // on every 1px scroll, so using improper key would lead to image flickering in each
             // card of the grid view when scrolling.
+            const item = getProp(currentCollection, `items[${slotIndex}]`);
+            const className = classNames('bdl-GridView-slot', {
+                'bdl-GridView-slot--selected': getProp(item, 'selected'),
+            });
+
             contents.push(
                 <div
-                    key={getProp(currentCollection, `items[${slotIndex}].id`) || uniqueId('bdl-GridView-slot')}
-                    className="bdl-GridView-slot"
+                    key={getProp(item, `id`) || uniqueId('bdl-GridView-slot')}
+                    className={className}
+                    onClick={() => onItemSelect(item)}
+                    role="presentation"
                 >
                     {slotRenderer(slotIndex)}
                 </div>,
