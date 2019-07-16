@@ -43,6 +43,7 @@ import {
     VIEW_ERROR,
     VIEW_RECENTS,
     VIEW_MODE_LIST,
+    VIEW_MODE_GRID,
     TYPE_FILE,
     TYPE_WEBLINK,
     TYPE_FOLDER,
@@ -60,6 +61,8 @@ import '../common/fonts.scss';
 import '../common/base.scss';
 import '../common/modal.scss';
 import './ContentExplorer.scss';
+
+const DEFAULT_THUMBNAIL_DIMENSIONS = '1024x1024';
 
 type Props = {
     apiHost: string,
@@ -384,6 +387,35 @@ class ContentExplorer extends Component<Props, State> {
     };
 
     /**
+     * Call Box Representations API to fetch thumbnails of all files in collection.
+     * The thumbnailUrls array in state will be populated with urls to thumbnails.
+     * If a thumbnail could not be found, that item's entry in thumbnailUrls will be null.
+     *
+     * @private
+     * @param {Array<BoxItem>} items - item collection object
+     * @param {string} dimensions - desired dimensions of thumbnail. Acceptable dimensions
+     * for a jpg are: "32x32", "94x94", "160x160", "320x320", "1024x1024", "2048x2048".
+     * @return {void}
+     */
+    fetchThumbnailUrls(items: Array<BoxItem>, dimensions: string): void {
+        const fileAPI = this.api.getFileAPI();
+
+        // not using Promise.all since thumbnails should load one at a time
+        items.forEach((item, index) => {
+            new Promise(resolve => {
+                // getFileThumbnail resolves with thumbnailUrl if one is found, null otherwise.
+                fileAPI.getFileThumbnail(item, dimensions, resolve, this.errorCallback);
+            }).then(thumbnailUrl => {
+                const currentCollection = { ...this.state.currentCollection };
+                if (currentCollection.items) {
+                    currentCollection.items[index].thumbnailUrl = thumbnailUrl;
+                    this.setState({ currentCollection });
+                }
+            });
+        });
+    }
+
+    /**
      * Folder fetch success callback
      *
      * @private
@@ -393,8 +425,8 @@ class ContentExplorer extends Component<Props, State> {
      */
     fetchFolderSuccessCallback(collection: Collection, triggerNavigationEvent: boolean): void {
         const { onNavigate, rootFolderId }: Props = this.props;
-        const { id, name, boxItem }: Collection = collection;
-        const { selected }: State = this.state;
+        const { boxItem, id, items, name }: Collection = collection;
+        const { selected, viewMode }: State = this.state;
         const rootName = id === rootFolderId ? name : '';
 
         this.updateCollection(collection, selected);
@@ -410,6 +442,9 @@ class ContentExplorer extends Component<Props, State> {
             }
         } else {
             this.setState({ rootName });
+        }
+        if (viewMode === VIEW_MODE_GRID && items) {
+            this.fetchThumbnailUrls(items, DEFAULT_THUMBNAIL_DIMENSIONS);
         }
     }
 
@@ -504,7 +539,8 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     searchSuccessCallback = (collection: Collection) => {
-        const { selected }: State = this.state;
+        const { currentCollection, selected, viewMode }: State = this.state;
+        const { items } = currentCollection;
 
         // Unselect any rows that were selected
         this.unselect();
@@ -513,6 +549,10 @@ class ContentExplorer extends Component<Props, State> {
         this.closeModals();
 
         this.updateCollection(collection, selected);
+
+        if (viewMode === VIEW_MODE_GRID && items) {
+            this.fetchThumbnailUrls(items, DEFAULT_THUMBNAIL_DIMENSIONS);
+        }
     };
 
     /**
@@ -592,6 +632,9 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     recentsSuccessCallback(collection: Collection, triggerNavigationEvent: boolean) {
+        const { viewMode } = this.state;
+        const { items } = collection;
+
         // Unselect any rows that were selected
         this.unselect();
 
@@ -601,6 +644,10 @@ class ContentExplorer extends Component<Props, State> {
             this.setState(newState, this.finishNavigation);
         } else {
             this.setState(newState);
+        }
+
+        if (viewMode === VIEW_MODE_GRID && items) {
+            this.fetchThumbnailUrls(items, DEFAULT_THUMBNAIL_DIMENSIONS);
         }
     }
 
@@ -1234,6 +1281,10 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     changeViewMode = (viewMode: ViewMode): void => {
+        const { items } = this.state.currentCollection;
+        if (viewMode === VIEW_MODE_GRID && items) {
+            this.fetchThumbnailUrls(items, DEFAULT_THUMBNAIL_DIMENSIONS);
+        }
         this.setState({ viewMode });
     };
 

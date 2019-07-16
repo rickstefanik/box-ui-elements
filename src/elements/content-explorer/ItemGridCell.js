@@ -1,5 +1,7 @@
 // @flow
 import * as React from 'react';
+import classNames from 'classnames';
+import getProp from 'lodash/get';
 import getSize from '../../utils/size';
 import MoreOptions from './MoreOptions';
 import Date from './Date';
@@ -24,10 +26,20 @@ const ItemGridCell = ({
     view,
     ...rest
 }: Props) => {
+    const url = getProp(item, `thumbnailUrl`);
+    const itemClassName = classNames(
+        'bce-ItemGridCell-item',
+        { 'bce-ItemGridCell-item--postLoadThumbnail': url },
+        { 'bce-ItemGridCell-item--itemIcon': !url },
+    );
     return (
         <figure>
             <div className="bce-ItemGridCell-itemThumbnail">
-                <div className="bce-ItemGridCell-itemIcon">{getIcon(128, item)}</div>
+                {url ? (
+                    <div className={itemClassName} style={{ backgroundImage: `url("${url}")` }} />
+                ) : (
+                    <div className={itemClassName}> {getIcon(128, item)} </div>
+                )}
             </div>
             <figcaption>
                 <Name

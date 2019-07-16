@@ -5,14 +5,23 @@
     position: relative;
 }
 
-.bce-ItemGridCell-itemIcon {
-    align-items: center;
+.bce-ItemGridCell-item {
     bottom: 0;
-    display: flex;
-    justify-content: center;
     left: 0;
     margin: auto;
     position: absolute;
     right: 0;
     top: 0;
+
+    &.bce-ItemGridCell-item--itemIcon {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }
+
+    &.bce-ItemGridCell-item--postLoadThumbnail {
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
 }

@@ -5,6 +5,7 @@
  */
 
 import queryString from 'query-string';
+import getProp from 'lodash/get';
 import { findMissingProperties, fillMissingProperties } from '../utils/fields';
 import { getTypedFileId } from '../utils/file';
 import { getBadItemError, getBadPermissionsError } from '../utils/error';
@@ -15,6 +16,7 @@ import {
     FIELD_AUTHENTICATED_DOWNLOAD_URL,
     FIELD_EXTENSION,
     FIELD_IS_DOWNLOAD_AVAILABLE,
+    FIELD_REPRESENTATIONS,
     X_REP_HINTS,
 } from '../constants';
 import Item from './Item';
@@ -197,6 +199,85 @@ class File extends Item {
             }
 
             this.successHandler(cache.get(key));
+        } catch (e) {
+            this.errorHandler(e);
+        }
+    }
+
+    /**
+     * Get the thumbnail url for a given BoxItem.  The function will attempt
+     * to fetch a jpg thumbnail of the given dimensions.  If this fails, the function
+     * will attempt to fectch a 1024x1024 png of the first page of the file as a fallback.
+     * (Certain file types do not have 'thumbnails' but do have 'pages', so the png fallback
+     * covers these types.)
+     *
+     * @param {BoxItem} item - item whose thumbnail should be fetched
+     * @param {string} dimensions - desired dimensions of jpg thumbnail. Acceptable dimensions
+     * for the jpg are: "32x32", "94x94", "160x160", "320x320", "1024x1024", "2048x2048".
+     * @param {Function} successCallback - function to call with the thumbnail url. The function
+     *  will recieve null as its argument if a thumbnail could not be fetched.
+     * @param {Function} errorCallback - Function to call with errors
+     * @return {void}
+     */
+    getFileThumbnail(
+        item: BoxItem,
+        dimensions: string,
+        successCallback: Function,
+        errorCallback: ElementsErrorCallback,
+    ): void {
+        if (this.isDestroyed()) {
+            this.successHandler(null);
+            return;
+        }
+        this.successCallback = successCallback;
+        this.errorCallback = errorCallback;
+
+        const access_token = this.xhr.token;
+        // no need to make api call since folders do not have thumbnails
+        if (item.type === 'folder' || !access_token) {
+            this.successHandler(null);
+            return;
+        }
+
+        const { id } = item;
+        const cache: APICache = this.getCache();
+        const key: string = this.getCacheKey(`_thumbnail_${id}`);
+        if (cache.has(key)) {
+            this.successHandler(cache.get(key));
+            return;
+        }
+
+        const xhrOptions: Object = {
+            url: this.getUrl(id),
+            headers: {
+                // API will return first representation it finds, so 1024x1024 png is fallback.
+                'X-Rep-Hints': `[jpg?dimensions=${dimensions},png?dimensions=1024x1024]`,
+            },
+            params: {
+                fields: FIELD_REPRESENTATIONS,
+            },
+        };
+        try {
+            this.xhr
+                .get(xhrOptions)
+                .then(response => {
+                    const entries = response.data.representations.entries;
+                    if (getProp(entries, '[0].status.state') !== 'success') {
+                        return null;
+                    }
+
+                    // if unable to fetch jpg thumbnail, grab png rep of first page.
+                    // (Asset path for thumbnail is simply empty string.)
+                    const asset_path = entries[0].representation === 'jpg' ? '' : '1.png';
+                    const thumbnailBaseUrl = entries[0].content.url_template.replace('{+asset_path}', asset_path);
+                    return `${thumbnailBaseUrl}?access_token=${access_token}`;
+                })
+                .then(thumbnailUrl => {
+                    cache.set(key, thumbnailUrl);
+                    if (!this.isDestroyed() && typeof successCallback === 'function') {
+                        successCallback(thumbnailUrl);
+                    }
+                });
         } catch (e) {
             this.errorHandler(e);
         }
