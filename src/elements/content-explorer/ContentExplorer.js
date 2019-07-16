@@ -69,6 +69,8 @@ import '../common/modal.scss';
 import './ContentExplorer.scss';
 import '../../components/grid-view/GridViewSlot.scss';
 
+const DEFAULT_THUMBNAIL_DIMENSIONS = '1024x1024';
+
 type Props = {
     apiHost: string,
     appHost: string,
@@ -414,11 +416,12 @@ class ContentExplorer extends Component<Props, State> {
         // not using Promise.all since thumbnails should load one at a time
         items.forEach((item, index) => {
             new Promise(resolve => {
+                // getFileThumbnail resolves with thumbnailUrl if one is found, null otherwise.
                 fileAPI.getFileThumbnail(item, dimensions, resolve, this.errorCallback);
-            }).then(data => {
+            }).then(thumbnailUrl => {
                 const currentCollection = { ...this.state.currentCollection };
                 if (currentCollection.items) {
-                    currentCollection.items[index].thumbnailUrl = data;
+                    currentCollection.items[index].thumbnailUrl = thumbnailUrl;
                     this.setState({ currentCollection });
                 }
             });
@@ -442,7 +445,7 @@ class ContentExplorer extends Component<Props, State> {
         this.updateCollection(collection, selected);
 
         if (viewMode === VIEW_MODE_GRID && items) {
-            this.fetchThumbnailUrls(items, '1024x1024');
+            this.fetchThumbnailUrls(items, DEFAULT_THUMBNAIL_DIMENSIONS);
         }
 
         // Close any open modals
@@ -554,7 +557,7 @@ class ContentExplorer extends Component<Props, State> {
         const { items } = currentCollection;
 
         if (viewMode === VIEW_MODE_GRID && items) {
-            this.fetchThumbnailUrls(items, '1024x1024');
+            this.fetchThumbnailUrls(items, DEFAULT_THUMBNAIL_DIMENSIONS);
         }
 
         // Unselect any rows that were selected
@@ -650,7 +653,7 @@ class ContentExplorer extends Component<Props, State> {
         this.unselect();
 
         if (viewMode === VIEW_MODE_GRID && items) {
-            this.fetchThumbnailUrls(items, '1024x1024');
+            this.fetchThumbnailUrls(items, DEFAULT_THUMBNAIL_DIMENSIONS);
         }
 
         // Set the new state and focus the grid for tabbing
@@ -1361,7 +1364,7 @@ class ContentExplorer extends Component<Props, State> {
     changeViewMode = (viewMode: ViewMode): void => {
         const { items } = this.state.currentCollection;
         if (viewMode === VIEW_MODE_GRID && items) {
-            this.fetchThumbnailUrls(items, '1024x1024');
+            this.fetchThumbnailUrls(items, DEFAULT_THUMBNAIL_DIMENSIONS);
         }
         this.setState({ viewMode });
     };
