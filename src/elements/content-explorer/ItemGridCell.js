@@ -41,7 +41,7 @@ const ItemGridCell = ({
                     <div className={itemClassName}> {getIcon(128, item)} </div>
                 )}
             </div>
-            <figcaption>
+            <figcaption className="bce-ItemGridCell-figcaption">
                 <Name
                     canPreview={canPreview}
                     isTouch={isTouch}
@@ -58,8 +58,14 @@ const ItemGridCell = ({
                         <Date dataKey="" item={item} />
                     </React.Fragment>
                 )}
+                <MoreOptions
+                    canPreview={canPreview}
+                    isSmall={isSmall}
+                    item={item}
+                    onItemSelect={onItemSelect}
+                    {...rest}
+                />
             </figcaption>
-            <MoreOptions canPreview={canPreview} isSmall={isSmall} item={item} onItemSelect={onItemSelect} {...rest} />
         </figure>
     );
 };
