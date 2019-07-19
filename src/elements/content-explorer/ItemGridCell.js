@@ -26,6 +26,7 @@ const ItemGridCell = ({
     view,
     ...rest
 }: Props) => {
+    isSmall = true;
     const url = getProp(item, `thumbnailUrl`);
     const itemClassName = classNames(
         'bce-ItemGridCell-item',
