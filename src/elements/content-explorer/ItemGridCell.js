@@ -39,7 +39,7 @@ const ItemGridCell = ({
                 {url ? (
                     <div className={itemClassName} style={{ backgroundImage: `url("${url}")` }} />
                 ) : (
-                    <div className={itemClassName}> {getIcon(128, item)} </div>
+                    <div className={itemClassName}> {getIcon(128, item, true)} </div>
                 )}
             </div>
             <figcaption className="bce-ItemGridCell-figcaption">

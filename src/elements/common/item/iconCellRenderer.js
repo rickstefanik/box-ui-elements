@@ -12,7 +12,7 @@ import { TYPE_FOLDER, TYPE_FILE, TYPE_WEBLINK } from '../../../constants';
 
 import './IconCell.scss';
 
-export function getIcon(dimension: number, rowData: BoxItem) {
+export function getIcon(dimension: number, rowData: BoxItem, changeWeblinkHeight: boolean = false) {
     const { type, extension, has_collaborations, is_externally_owned }: BoxItem = rowData;
     switch (type) {
         case TYPE_FOLDER:
@@ -20,7 +20,11 @@ export function getIcon(dimension: number, rowData: BoxItem) {
         case TYPE_FILE:
             return <FileIcon dimension={dimension} extension={extension} />;
         case TYPE_WEBLINK:
-            return <BookmarkIcon width={dimension} />;
+            return changeWeblinkHeight ? (
+                <BookmarkIcon height={dimension} width={dimension} />
+            ) : (
+                <BookmarkIcon width={dimension} />
+            );
         default:
             throw new Error('Unsupported item type!');
     }
