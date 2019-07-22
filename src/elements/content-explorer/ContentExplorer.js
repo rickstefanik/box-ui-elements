@@ -19,6 +19,7 @@ import Pagination from '../common/pagination';
 import SubHeader from '../common/sub-header/SubHeader';
 import makeResponsive from '../common/makeResponsive';
 import openUrlInsideIframe from '../../utils/iframe';
+import LocalStore from '../../utils/LocalStore';
 import Internationalize from '../common/Internationalize';
 import API from '../../api';
 import Footer from './Footer';
@@ -150,6 +151,8 @@ class ContentExplorer extends Component<Props, State> {
     globalModifier: boolean;
 
     firstLoad: boolean = true; // Keeps track of very 1st load
+
+    store: LocalStore = new LocalStore();
 
     static defaultProps = {
         rootFolderId: DEFAULT_ROOT,
@@ -284,6 +287,11 @@ class ContentExplorer extends Component<Props, State> {
             this.showRecents();
         } else {
             this.fetchFolder(currentFolderId);
+        }
+
+        const pref = this.store.getItem('bce.defaultViewMode');
+        if (pref && (pref === VIEW_MODE_GRID || pref === VIEW_MODE_LIST)) {
+            this.changeViewMode(pref);
         }
     }
 
@@ -1285,6 +1293,7 @@ class ContentExplorer extends Component<Props, State> {
         if (viewMode === VIEW_MODE_GRID && items) {
             this.fetchThumbnailUrls(items, DEFAULT_THUMBNAIL_DIMENSIONS);
         }
+        this.store.setItem('bce.defaultViewMode', viewMode);
         this.setState({ viewMode });
     };
 
