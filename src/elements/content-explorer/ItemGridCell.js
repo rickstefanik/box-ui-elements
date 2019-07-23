@@ -27,6 +27,7 @@ const ItemGridCell = ({
     ...rest
 }: Props) => {
     isSmall = true;
+    const onClick = () => onItemClick(item);
     const url = getProp(item, `thumbnailUrl`);
     const itemClassName = classNames(
         'bce-ItemGridCell-item',
@@ -37,9 +38,16 @@ const ItemGridCell = ({
         <figure className="bce-ItemGridCell-figure">
             <div className="bce-ItemGridCell-itemThumbnail">
                 {url ? (
-                    <div className={itemClassName} style={{ backgroundImage: `url("${url}")` }} />
+                    <div
+                        className={itemClassName}
+                        onClick={onClick}
+                        style={{ backgroundImage: `url("${url}")` }}
+                        role="presentation"
+                    />
                 ) : (
-                    <div className={itemClassName}> {getIcon(128, item, true)} </div>
+                    <div className={itemClassName} onClick={onClick} role="presentation">
+                        {getIcon(128, item, true)}
+                    </div>
                 )}
             </div>
             <figcaption className="bce-ItemGridCell-figcaption">

@@ -8,10 +8,11 @@ import type { ItemGridProps } from './flowTypes';
 
 type Props = {
     currentCollection: Collection,
+    gridColumnCount: number,
     ...$Exact<ItemGridProps>,
 };
 
-const ItemGrid = ({ currentCollection, onItemSelect, rootId, ...rest }: Props) => {
+const ItemGrid = ({ currentCollection, gridColumnCount, onItemSelect, rootId, ...rest }: Props) => {
     /**
      * Renderer used for cards in grid view
      *
@@ -29,6 +30,7 @@ const ItemGrid = ({ currentCollection, onItemSelect, rootId, ...rest }: Props) =
             {({ height, width }) => (
                 <GridViewWrapper
                     currentCollection={currentCollection}
+                    gridColumnCount={gridColumnCount}
                     height={height}
                     onItemSelect={onItemSelect}
                     slotRenderer={slotRenderer}

@@ -7,6 +7,7 @@
 import React from 'react';
 import Sort from './Sort';
 import Add from './Add';
+import GridViewSlider from '../../../components/grid-view/GridViewSlider';
 import ViewModeChangeButton from './ViewModeChangeButton';
 import { FeatureFlag } from '../feature-checking';
 import { VIEW_FOLDER } from '../../../constants';
@@ -17,7 +18,9 @@ type Props = {
     canCreateNewFolder: boolean,
     canUpload: boolean,
     currentCollection: Collection,
+    gridColumnCount: number,
     onCreate: Function,
+    onGridViewSliderChange: (newViewSize: number) => void,
     onSortChange: Function,
     onUpload: Function,
     onViewModeChange?: (viewMode: ViewMode) => void,
@@ -29,6 +32,8 @@ const SubHeaderRight = ({
     canCreateNewFolder,
     canUpload,
     currentCollection,
+    gridColumnCount,
+    onGridViewSliderChange,
     onCreate,
     onViewModeChange,
     onSortChange,
@@ -42,10 +47,12 @@ const SubHeaderRight = ({
     const showSort: boolean = isFolder && hasItems;
     const showAdd: boolean = (!!canUpload || !!canCreateNewFolder) && isFolder;
     const showGridButton: boolean = isFolder && hasItems;
+    const showGridSlider: boolean = isFolder && hasItems;
 
     return (
         <div className="be-sub-header-right">
             <FeatureFlag feature="contentExplorer.gridView.enabled">
+                {showGridSlider && <GridViewSlider columnCount={gridColumnCount} onChange={onGridViewSliderChange} />}
                 {showGridButton && <ViewModeChangeButton viewMode={viewMode} onViewModeChange={onViewModeChange} />}
             </FeatureFlag>
 

@@ -64,6 +64,7 @@ import '../common/modal.scss';
 import './ContentExplorer.scss';
 
 const DEFAULT_THUMBNAIL_DIMENSIONS = '1024x1024';
+const MAX_GRID_VIEW_COLUMNS = 7;
 
 type Props = {
     apiHost: string,
@@ -117,6 +118,7 @@ type State = {
     currentPageSize: number,
     errorCode: string,
     focusedRow: number,
+    gridColumnCount: number,
     isCreateFolderModalOpen: boolean,
     isDeleteModalOpen: boolean,
     isLoading: boolean,
@@ -234,6 +236,7 @@ class ContentExplorer extends Component<Props, State> {
             currentPageSize: initialPageSize,
             errorCode: '',
             focusedRow: 0,
+            gridColumnCount: MAX_GRID_VIEW_COLUMNS,
             isCreateFolderModalOpen: false,
             isDeleteModalOpen: false,
             isLoading: false,
@@ -1297,6 +1300,13 @@ class ContentExplorer extends Component<Props, State> {
         this.setState({ viewMode });
     };
 
+    onGridViewSliderChange = (newViewSize: number): void => {
+        // need to do this calculation since lowest value of grid view slider
+        // means highest number of columns
+        const gridColumnCount = MAX_GRID_VIEW_COLUMNS - newViewSize + 1;
+        this.setState({ gridColumnCount });
+    };
+
     /**
      * Renders the file picker
      *
@@ -1345,6 +1355,7 @@ class ContentExplorer extends Component<Props, State> {
             currentCollection,
             currentPageSize,
             searchQuery,
+            gridColumnCount,
             isDeleteModalOpen,
             isRenameModalOpen,
             isShareModalOpen,
@@ -1385,8 +1396,10 @@ class ContentExplorer extends Component<Props, State> {
                             currentCollection={currentCollection}
                             canUpload={allowUpload}
                             canCreateNewFolder={allowCreate}
+                            gridColumnCount={gridColumnCount}
                             onUpload={this.upload}
                             onCreate={this.createFolder}
+                            onGridViewSliderChange={this.onGridViewSliderChange}
                             onItemClick={this.fetchFolder}
                             onSortChange={this.sort}
                             onViewModeChange={this.changeViewMode}
@@ -1416,6 +1429,7 @@ class ContentExplorer extends Component<Props, State> {
                             onItemShare={this.share}
                             onItemPreview={this.preview}
                             onSortChange={this.sort}
+                            gridColumnCount={gridColumnCount}
                         />
                         <Footer>
                             <Pagination

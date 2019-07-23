@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import noop from 'lodash/noop';
 import SubHeaderLeft from './SubHeaderLeft';
 import SubHeaderRight from './SubHeaderRight';
 import type { ViewMode } from '../flowTypes';
@@ -16,8 +17,10 @@ type Props = {
     canCreateNewFolder: boolean,
     canUpload: boolean,
     currentCollection: Collection,
+    gridColumnCount?: number,
     isSmall: boolean,
     onCreate: Function,
+    onGridViewSliderChange?: (newViewSize: number) => void,
     onItemClick: Function,
     onSortChange: Function,
     onUpload: Function,
@@ -32,6 +35,8 @@ const SubHeader = ({
     canCreateNewFolder,
     canUpload,
     currentCollection,
+    gridColumnCount = 0,
+    onGridViewSliderChange = noop,
     isSmall,
     onCreate,
     onItemClick,
@@ -56,7 +61,9 @@ const SubHeader = ({
             canCreateNewFolder={canCreateNewFolder}
             canUpload={canUpload}
             currentCollection={currentCollection}
+            gridColumnCount={gridColumnCount}
             viewMode={viewMode}
+            onGridViewSliderChange={onGridViewSliderChange}
             onCreate={onCreate}
             onViewModeChange={onViewModeChange}
             onSortChange={onSortChange}

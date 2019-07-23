@@ -11,6 +11,13 @@
         max-width: $columns1prct;
     }
 
+    &.bdl-GridView--columns-2 .bdl-GridView-slot {
+        $columns2prct: calc(50% - 10px); /* 100%/3 - 10px */
+
+        flex-basis: $columns2prct;
+        max-width: $columns2prct;
+    }
+
     &.bdl-GridView--columns-3 .bdl-GridView-slot {
         $columns3prct: calc(33.3333% - 10px); /* 100%/3 - 10px */
 
@@ -18,11 +25,32 @@
         max-width: $columns3prct;
     }
 
+    &.bdl-GridView--columns-4 .bdl-GridView-slot {
+        $columns4prct: calc(25% - 10px); /* 100%/3 - 10px */
+
+        flex-basis: $columns4prct;
+        max-width: $columns4prct;
+    }
+
     &.bdl-GridView--columns-5 .bdl-GridView-slot {
         $columns5prct: calc(20% - 10px); /* 100%/5 - 10px */
 
         flex-basis: $columns5prct;
         max-width: $columns5prct;
+    }
+
+    &.bdl-GridView--columns-6 .bdl-GridView-slot {
+        $columns6prct: calc(16.6666% - 10px); /* 100%/3 - 10px */
+
+        flex-basis: $columns6prct;
+        max-width: $columns6prct;
+    }
+
+    &.bdl-GridView--columns-7 .bdl-GridView-slot {
+        $columns7prct: calc(14.2857% - 10px); /* 100%/7 - 10px */
+
+        flex-basis: $columns7prct;
+        max-width: $columns7prct;
     }
 
     .ReactVirtualized__Table__rowColumn:first-of-type {
