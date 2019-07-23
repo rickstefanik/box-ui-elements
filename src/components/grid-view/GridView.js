@@ -67,14 +67,13 @@ class GridView extends React.Component<Props> {
             // on every 1px scroll, so using improper key would lead to image flickering in each
             // card of the grid view when scrolling.
             const item = getProp(currentCollection, `items[${slotIndex}]`);
-            const className = classNames('bdl-GridView-slot', {
-                'bdl-GridView-slot--selected': getProp(item, 'selected'),
-            });
 
             contents.push(
                 <div
                     key={getProp(item, `id`) || uniqueId('bdl-GridView-slot')}
-                    className={className}
+                    className={classNames('bdl-GridView-slot', {
+                        'bdl-GridView-slot--selected': getProp(item, 'selected'),
+                    })}
                     onClick={() => onItemSelect(item)}
                     role="presentation"
                 >

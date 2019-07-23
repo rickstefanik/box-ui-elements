@@ -33,10 +33,11 @@ type Props = {
     canShare: boolean,
     currentCollection: Collection,
     focusedRow: number,
-    gridColumnCount: number,
+    gridColumnCount?: number,
     isMedium: boolean,
     isSmall: boolean,
     isTouch: boolean,
+    maxGridColumnCount?: number,
     onItemClick: Function,
     onItemDelete: Function,
     onItemDownload: Function,
@@ -55,8 +56,9 @@ type Props = {
 const Content = ({
     currentCollection,
     focusedRow,
-    gridColumnCount,
+    gridColumnCount = 0,
     isMedium,
+    maxGridColumnCount = 0,
     onSortChange,
     tableRef,
     view,
@@ -87,6 +89,7 @@ const Content = ({
                 <ItemGrid
                     currentCollection={currentCollection}
                     gridColumnCount={gridColumnCount}
+                    maxGridColumnCount={maxGridColumnCount}
                     view={view}
                     {...rest}
                 />

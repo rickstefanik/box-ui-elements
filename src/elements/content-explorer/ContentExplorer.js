@@ -1434,6 +1434,7 @@ class ContentExplorer extends Component<Props, State> {
                             onItemPreview={this.preview}
                             onSortChange={this.sort}
                             gridColumnCount={gridColumnCount}
+                            maxGridColumnCount={MAX_GRID_VIEW_COLUMNS}
                         />
                         <Footer>
                             <Pagination

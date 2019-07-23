@@ -9,10 +9,11 @@ import type { ItemGridProps } from './flowTypes';
 type Props = {
     currentCollection: Collection,
     gridColumnCount: number,
+    maxGridColumnCount: number,
     ...$Exact<ItemGridProps>,
 };
 
-const ItemGrid = ({ currentCollection, gridColumnCount, onItemSelect, rootId, ...rest }: Props) => {
+const ItemGrid = ({ currentCollection, gridColumnCount, maxGridColumnCount, onItemSelect, rootId, ...rest }: Props) => {
     /**
      * Renderer used for cards in grid view
      *
@@ -32,6 +33,7 @@ const ItemGrid = ({ currentCollection, gridColumnCount, onItemSelect, rootId, ..
                     currentCollection={currentCollection}
                     gridColumnCount={gridColumnCount}
                     height={height}
+                    maxGridColumnCount={maxGridColumnCount}
                     onItemSelect={onItemSelect}
                     slotRenderer={slotRenderer}
                     width={width}
