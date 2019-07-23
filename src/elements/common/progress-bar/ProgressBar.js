@@ -5,6 +5,7 @@
  */
 
 import React, { PureComponent } from 'react';
+import { overlayZIndex } from '../../../styles/variables';
 import './ProgressBar.scss';
 
 type Props = {
@@ -112,6 +113,7 @@ class ProgressBar extends PureComponent<Props, State> {
     render() {
         const { percent }: State = this.state;
         const containerStyle = {
+            zIndex: overlayZIndex,
             opacity: percent > 0 && percent < 100 ? 1 : 0,
             transitionDelay: percent > 0 && percent < 100 ? '0' : '0.4s',
         };
