@@ -45,6 +45,7 @@ const SubHeaderRight = ({
     view,
     viewMode,
 }: Props) => {
+    console.log(maxGridColumnCount);
     const { sortBy, sortDirection, items = [] }: Collection = currentCollection;
     const hasItems: boolean = items.length > 0;
     const isFolder: boolean = view === VIEW_FOLDER;

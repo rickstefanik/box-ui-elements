@@ -128,6 +128,7 @@ type State = {
     isRenameModalOpen: boolean,
     isShareModalOpen: boolean,
     isUploadModalOpen: boolean,
+    maxGridColumnCount: number,
     rootName: string,
     searchQuery: string,
     selected?: BoxItem,
@@ -239,6 +240,7 @@ class ContentExplorer extends Component<Props, State> {
             errorCode: '',
             focusedRow: 0,
             gridColumnCount: DEFAULT_GRID_VIEW_COLUMNS,
+            maxGridColumnCount: MAX_GRID_VIEW_COLUMNS,
             isCreateFolderModalOpen: false,
             isDeleteModalOpen: false,
             isLoading: false,
@@ -1309,6 +1311,18 @@ class ContentExplorer extends Component<Props, State> {
         this.setState({ gridColumnCount });
     };
 
+    updateMaxColumns = (maxGridColumnCount: number) => {
+        console.log(`calling updateMaxColumns with ${maxGridColumnCount}`);
+        const { gridColumnCount } = this.state;
+        let newState = { maxGridColumnCount, gridColumnCount: maxGridColumnCount };
+        if (gridColumnCount <= maxGridColumnCount) {
+            newState = { maxGridColumnCount };
+        }
+        console.log('newState');
+        console.log(newState);
+        this.setState(newState);
+    };
+
     /**
      * Renders the file picker
      *
@@ -1358,6 +1372,7 @@ class ContentExplorer extends Component<Props, State> {
             currentPageSize,
             searchQuery,
             gridColumnCount,
+            maxGridColumnCount,
             isDeleteModalOpen,
             isRenameModalOpen,
             isShareModalOpen,
@@ -1399,7 +1414,7 @@ class ContentExplorer extends Component<Props, State> {
                             canUpload={allowUpload}
                             canCreateNewFolder={allowCreate}
                             gridColumnCount={gridColumnCount}
-                            maxGridColumnCount={MAX_GRID_VIEW_COLUMNS}
+                            maxGridColumnCount={maxGridColumnCount}
                             minGridColumnCount={MIN_GRID_VIEW_COLUMNS}
                             onUpload={this.upload}
                             onCreate={this.createFolder}
@@ -1434,7 +1449,8 @@ class ContentExplorer extends Component<Props, State> {
                             onItemPreview={this.preview}
                             onSortChange={this.sort}
                             gridColumnCount={gridColumnCount}
-                            maxGridColumnCount={MAX_GRID_VIEW_COLUMNS}
+                            maxGridColumnCount={maxGridColumnCount}
+                            updateMaxColumns={this.updateMaxColumns}
                         />
                         <Footer>
                             <Pagination

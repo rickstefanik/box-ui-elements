@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import noop from 'lodash/noop';
 import EmptyState from '../common/empty-state';
 import ProgressBar from '../common/progress-bar';
 import ItemGrid from './ItemGrid';
@@ -49,6 +50,7 @@ type Props = {
     rootElement?: HTMLElement,
     rootId: string,
     tableRef: Function,
+    updateMaxColumns?: (maxGridColumnCount: number) => void,
     view: View,
     viewMode?: ViewMode,
 };
@@ -61,6 +63,7 @@ const Content = ({
     maxGridColumnCount = 0,
     onSortChange,
     tableRef,
+    updateMaxColumns = noop,
     view,
     viewMode = VIEW_MODE_LIST,
     ...rest
@@ -90,6 +93,7 @@ const Content = ({
                     currentCollection={currentCollection}
                     gridColumnCount={gridColumnCount}
                     maxGridColumnCount={maxGridColumnCount}
+                    updateMaxColumns={updateMaxColumns}
                     view={view}
                     {...rest}
                 />

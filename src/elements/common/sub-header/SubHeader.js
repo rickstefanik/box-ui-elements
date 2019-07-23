@@ -52,6 +52,7 @@ const SubHeader = ({
     view,
     viewMode = VIEW_MODE_LIST,
 }: Props) => (
+    // console.log(maxGridColumnCount);
     <div className="be-sub-header" data-testid="be-sub-header">
         <SubHeaderLeft
             currentCollection={currentCollection}
