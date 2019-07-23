@@ -8,18 +8,18 @@ import './GridViewSlider.scss';
 
 type Props = {
     columnCount: number,
+    isTouch: boolean,
     maxColumnCount: number,
     minColumnCount: number,
     onChange: (newViewSize: number) => void,
 };
 
+const MAX_POSSIBLE_COLUMNS = 7;
 const RANGE_STEP = 1;
 
-const GridViewSlider = ({ columnCount, maxColumnCount, minColumnCount, onChange }: Props) => {
-    const RANGE_MIN = 7 - maxColumnCount + 1;
-    const RANGE_MAX = 7 - minColumnCount + 1;
-    console.log(`maxColumnCount: ${maxColumnCount}, minColumnCount: ${minColumnCount}`);
-    // console.log(`RANGE_MIN: ${RANGE_MIN}, RANGE_MAX: ${RANGE_MAX}`);
+const GridViewSlider = ({ columnCount, isTouch, maxColumnCount, minColumnCount, onChange }: Props) => {
+    const RANGE_MIN = MAX_POSSIBLE_COLUMNS - maxColumnCount + 1;
+    const RANGE_MAX = MAX_POSSIBLE_COLUMNS - minColumnCount + 1;
 
     const viewSize = RANGE_MAX - columnCount + 1;
     return (
@@ -33,17 +33,19 @@ const GridViewSlider = ({ columnCount, maxColumnCount, minColumnCount, onChange 
                 >
                     <IconMinusThin color={bdlNeutral03} width={14} height={14} />
                 </PlainButton>
-                <input
-                    className="bdl-GridViewSlider-Range"
-                    max={RANGE_MAX}
-                    min={RANGE_MIN}
-                    onChange={event => {
-                        onChange(event.currentTarget.valueAsNumber);
-                    }}
-                    step={RANGE_STEP}
-                    type="range"
-                    value={viewSize}
-                />
+                {!isTouch && (
+                    <input
+                        className="bdl-GridViewSlider-Range"
+                        max={RANGE_MAX}
+                        min={RANGE_MIN}
+                        onChange={event => {
+                            onChange(event.currentTarget.valueAsNumber);
+                        }}
+                        step={RANGE_STEP}
+                        type="range"
+                        value={viewSize}
+                    />
+                )}
                 <PlainButton
                     className="bdl-GridViewSlider-PlusButton"
                     onClick={() => {

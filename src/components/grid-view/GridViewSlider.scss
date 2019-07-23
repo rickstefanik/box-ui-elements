@@ -3,15 +3,14 @@
     margin-right: 2px;
 }
 
-.bdl-GridViewSlider-Range {
-    margin-left: 4px;
-    margin-right: 4px;
-}
+.btn-plain {
+    &.bdl-GridViewSlider-MinusButton {
+        display: flex;
+        margin-right: 4px;
+    }
 
-.bdl-GridViewSlider-MinusButton {
-    display: flex;
-}
-
-.bdl-GridViewSlider-PlusButton {
-    display: flex;
+    &.bdl-GridViewSlider-PlusButton {
+        display: flex;
+        margin-left: 4px;
+    }
 }

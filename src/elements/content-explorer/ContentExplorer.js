@@ -1304,23 +1304,30 @@ class ContentExplorer extends Component<Props, State> {
         this.setState({ viewMode });
     };
 
-    onGridViewSliderChange = (newViewSize: number): void => {
+    /**
+     * Callback for when value of GridViewSlider changes
+     *
+     * @param {number} sliderValue - value of slider
+     * @return {void}
+     */
+    onGridViewSliderChange = (sliderValue: number): void => {
         // need to do this calculation since lowest value of grid view slider
         // means highest number of columns
-        const gridColumnCount = MAX_GRID_VIEW_COLUMNS - newViewSize + 1;
+        const gridColumnCount = MAX_GRID_VIEW_COLUMNS - sliderValue + 1;
         this.setState({ gridColumnCount });
     };
 
+    /**
+     * Sets maxGridColumnCount and gridColumnCount properties of state based on width
+     * of GridView.
+     *
+     * @param {number} maxGridColumnCount - maximum number of columns that can be displayed given
+     * the current width of the GridView.
+     * @return {void}
+     */
     updateMaxColumns = (maxGridColumnCount: number) => {
-        console.log(`calling updateMaxColumns with ${maxGridColumnCount}`);
         const { gridColumnCount } = this.state;
-        let newState = { maxGridColumnCount, gridColumnCount: maxGridColumnCount };
-        if (gridColumnCount <= maxGridColumnCount) {
-            newState = { maxGridColumnCount };
-        }
-        console.log('newState');
-        console.log(newState);
-        this.setState(newState);
+        this.setState({ maxGridColumnCount, gridColumnCount: Math.min(gridColumnCount, maxGridColumnCount) });
     };
 
     /**
@@ -1409,6 +1416,7 @@ class ContentExplorer extends Component<Props, State> {
                             viewMode={viewMode}
                             rootId={rootFolderId}
                             isSmall={isSmall}
+                            isTouch={isTouch}
                             rootName={rootName}
                             currentCollection={currentCollection}
                             canUpload={allowUpload}

@@ -1,8 +1,8 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import getProp from 'lodash/get';
 import AutoSizer from 'react-virtualized/dist/es/AutoSizer';
-import GridViewWrapper from '../../components/grid-view/GridViewWrapper';
+import GridView from '../../components/grid-view/GridView';
 import ItemGridCell from './ItemGridCell';
 import type { ItemGridProps } from './flowTypes';
 
@@ -24,42 +24,48 @@ const ItemGrid = ({
     ...rest
 }: Props) => {
     const ONE_COLUMN_BREAKPOINT = 700;
-    const THREE_COLUMN_BREAKPOINT = 1400;
+    const THREE_COLUMN_BREAKPOINT = 1300;
+    const FIVE_COLUMN_BREAKPOINT = 1650;
     /**
      * Renderer used for cards in grid view
      *
      * @param {number} slotIndex - index of item in currentCollection.items
      * @return {React.Element} - Element to display in card
      */
-    const slotRenderer = (slotIndex: number) => {
+    const slotRenderer = (slotIndex: number): ?React.Element<any> => {
         const item: ?BoxItem = getProp(currentCollection, `items[${slotIndex}]`);
 
         return item ? <ItemGridCell item={item} onItemSelect={onItemSelect} rootId={rootId} {...rest} /> : null;
     };
 
-    const onResize = ({ width }) => {
-        console.log(`width: ${width}`);
+    /**
+     * Calls updateMaxColumns with the max number of columns that can be displayed given
+     * the current width of the GridView.
+     *
+     * @param {height: number, width: number} dimensions - current dimensions, as given by AutoSizer
+     * @return {void}
+     */
+    const onResize = ({ width }): void => {
         let maxColumns = 7;
         if (width < ONE_COLUMN_BREAKPOINT) {
             maxColumns = 1;
         } else if (width < THREE_COLUMN_BREAKPOINT) {
             maxColumns = 3;
+        } else if (width < FIVE_COLUMN_BREAKPOINT) {
+            maxColumns = 5;
         }
-        console.log(`in onResize.  maxColumns: ${maxColumns}, maxGridColumnCount: ${maxGridColumnCount}`);
         updateMaxColumns(maxColumns);
     };
 
     return (
         <AutoSizer onResize={onResize}>
             {({ height, width }) => (
-                <GridViewWrapper
+                <GridView
                     currentCollection={currentCollection}
-                    gridColumnCount={gridColumnCount}
+                    columnCount={gridColumnCount}
                     height={height}
-                    maxGridColumnCount={maxGridColumnCount}
                     onItemSelect={onItemSelect}
                     slotRenderer={slotRenderer}
-                    updateMaxColumns={updateMaxColumns}
                     width={width}
                 />
             )}

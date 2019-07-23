@@ -19,6 +19,7 @@ type Props = {
     currentCollection: Collection,
     gridColumnCount?: number,
     isSmall: boolean,
+    isTouch?: boolean,
     maxGridColumnCount?: number,
     minGridColumnCount?: number,
     onCreate: Function,
@@ -42,6 +43,7 @@ const SubHeader = ({
     minGridColumnCount = 0,
     onGridViewSliderChange = noop,
     isSmall,
+    isTouch = false,
     onCreate,
     onItemClick,
     onSortChange,
@@ -52,7 +54,6 @@ const SubHeader = ({
     view,
     viewMode = VIEW_MODE_LIST,
 }: Props) => (
-    // console.log(maxGridColumnCount);
     <div className="be-sub-header" data-testid="be-sub-header">
         <SubHeaderLeft
             currentCollection={currentCollection}
@@ -67,6 +68,7 @@ const SubHeader = ({
             canUpload={canUpload}
             currentCollection={currentCollection}
             gridColumnCount={gridColumnCount}
+            isTouch={isTouch}
             viewMode={viewMode}
             maxGridColumnCount={maxGridColumnCount}
             minGridColumnCount={minGridColumnCount}

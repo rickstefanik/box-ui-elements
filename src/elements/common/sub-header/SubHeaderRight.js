@@ -19,6 +19,7 @@ type Props = {
     canUpload: boolean,
     currentCollection: Collection,
     gridColumnCount: number,
+    isTouch: boolean,
     maxGridColumnCount: number,
     minGridColumnCount: number,
     onCreate: Function,
@@ -35,6 +36,7 @@ const SubHeaderRight = ({
     canUpload,
     currentCollection,
     gridColumnCount,
+    isTouch,
     maxGridColumnCount,
     minGridColumnCount,
     onGridViewSliderChange,
@@ -45,7 +47,6 @@ const SubHeaderRight = ({
     view,
     viewMode,
 }: Props) => {
-    console.log(maxGridColumnCount);
     const { sortBy, sortDirection, items = [] }: Collection = currentCollection;
     const hasItems: boolean = items.length > 0;
     const isFolder: boolean = view === VIEW_FOLDER;
@@ -60,6 +61,7 @@ const SubHeaderRight = ({
                 {showGridSlider && (
                     <GridViewSlider
                         columnCount={gridColumnCount}
+                        isTouch={isTouch}
                         maxColumnCount={maxGridColumnCount}
                         minColumnCount={minGridColumnCount}
                         onChange={onGridViewSliderChange}
