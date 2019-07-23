@@ -64,6 +64,8 @@ import '../common/modal.scss';
 import './ContentExplorer.scss';
 
 const DEFAULT_THUMBNAIL_DIMENSIONS = '1024x1024';
+const DEFAULT_GRID_VIEW_COLUMNS = 5;
+const MIN_GRID_VIEW_COLUMNS = 1;
 const MAX_GRID_VIEW_COLUMNS = 7;
 
 type Props = {
@@ -236,7 +238,7 @@ class ContentExplorer extends Component<Props, State> {
             currentPageSize: initialPageSize,
             errorCode: '',
             focusedRow: 0,
-            gridColumnCount: MAX_GRID_VIEW_COLUMNS,
+            gridColumnCount: DEFAULT_GRID_VIEW_COLUMNS,
             isCreateFolderModalOpen: false,
             isDeleteModalOpen: false,
             isLoading: false,
@@ -1397,6 +1399,8 @@ class ContentExplorer extends Component<Props, State> {
                             canUpload={allowUpload}
                             canCreateNewFolder={allowCreate}
                             gridColumnCount={gridColumnCount}
+                            maxGridColumnCount={MAX_GRID_VIEW_COLUMNS}
+                            minGridColumnCount={MIN_GRID_VIEW_COLUMNS}
                             onUpload={this.upload}
                             onCreate={this.createFolder}
                             onGridViewSliderChange={this.onGridViewSliderChange}

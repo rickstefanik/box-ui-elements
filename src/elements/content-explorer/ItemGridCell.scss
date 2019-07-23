@@ -32,6 +32,11 @@
         align-items: center;
         display: flex;
         justify-content: center;
+
+        & svg {
+            height: 60%;
+            width: 60%;
+        }
     }
 
     &.bce-ItemGridCell-item--postLoadThumbnail {

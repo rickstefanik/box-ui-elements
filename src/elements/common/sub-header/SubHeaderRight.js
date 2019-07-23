@@ -19,6 +19,8 @@ type Props = {
     canUpload: boolean,
     currentCollection: Collection,
     gridColumnCount: number,
+    maxGridColumnCount: number,
+    minGridColumnCount: number,
     onCreate: Function,
     onGridViewSliderChange: (newViewSize: number) => void,
     onSortChange: Function,
@@ -33,6 +35,8 @@ const SubHeaderRight = ({
     canUpload,
     currentCollection,
     gridColumnCount,
+    maxGridColumnCount,
+    minGridColumnCount,
     onGridViewSliderChange,
     onCreate,
     onViewModeChange,
@@ -52,7 +56,14 @@ const SubHeaderRight = ({
     return (
         <div className="be-sub-header-right">
             <FeatureFlag feature="contentExplorer.gridView.enabled">
-                {showGridSlider && <GridViewSlider columnCount={gridColumnCount} onChange={onGridViewSliderChange} />}
+                {showGridSlider && (
+                    <GridViewSlider
+                        columnCount={gridColumnCount}
+                        maxColumnCount={maxGridColumnCount}
+                        minColumnCount={minGridColumnCount}
+                        onChange={onGridViewSliderChange}
+                    />
+                )}
                 {showGridButton && <ViewModeChangeButton viewMode={viewMode} onViewModeChange={onViewModeChange} />}
             </FeatureFlag>
 

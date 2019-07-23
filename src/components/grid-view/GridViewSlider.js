@@ -3,33 +3,34 @@ import * as React from 'react';
 import IconPlusThin from '../../icons/general/IconPlusThin';
 import IconMinusThin from '../../icons/general/IconMinusThin';
 import PlainButton from '../plain-button/PlainButton';
+import { bdlNeutral03 } from '../../styles/variables';
 import './GridViewSlider.scss';
 
 type Props = {
     columnCount: number,
+    maxColumnCount: number,
+    minColumnCount: number,
     onChange: (newViewSize: number) => void,
 };
 
-const RANGE_MAX = 7;
-const RANGE_MIN = 1;
 const RANGE_STEP = 1;
 
-function GridViewSlider({ onChange, columnCount }: Props) {
-    const viewSize = RANGE_MAX - columnCount + 1;
+function GridViewSlider({ columnCount, maxColumnCount, minColumnCount, onChange }: Props) {
+    const viewSize = maxColumnCount - columnCount + 1;
     return (
         <div className="bdl-GridViewSlider">
             <PlainButton
                 className="bdl-GridViewSlider-MinusButton"
                 onClick={() => {
-                    onChange(Math.max(RANGE_MIN, viewSize - RANGE_STEP));
+                    onChange(Math.max(minColumnCount, viewSize - RANGE_STEP));
                 }}
             >
-                <IconMinusThin width={14} height={14} />
+                <IconMinusThin color={bdlNeutral03} width={14} height={14} />
             </PlainButton>
             <input
                 className="bdl-GridViewSlider-Range"
-                max={RANGE_MAX}
-                min={RANGE_MIN}
+                max={maxColumnCount}
+                min={minColumnCount}
                 onChange={event => {
                     onChange(event.currentTarget.valueAsNumber);
                 }}
@@ -40,10 +41,10 @@ function GridViewSlider({ onChange, columnCount }: Props) {
             <PlainButton
                 className="bdl-GridViewSlider-PlusButton"
                 onClick={() => {
-                    onChange(Math.min(RANGE_MAX, viewSize + RANGE_STEP));
+                    onChange(Math.min(maxColumnCount, viewSize + RANGE_STEP));
                 }}
             >
-                <IconPlusThin width={14} height={14} />
+                <IconPlusThin color={bdlNeutral03} width={14} height={14} />
             </PlainButton>
         </div>
     );
