@@ -20,10 +20,9 @@ type Props = {
     gridColumnCount?: number,
     isSmall: boolean,
     isTouch?: boolean,
-    maxGridColumnCount?: number,
-    minGridColumnCount?: number,
+    maxGridColumnCountForWidth?: number,
     onCreate: Function,
-    onGridViewSliderChange?: (newViewSize: number) => void,
+    onGridViewSliderChange?: (newSliderValue: number) => void,
     onItemClick: Function,
     onSortChange: Function,
     onUpload: Function,
@@ -39,8 +38,7 @@ const SubHeader = ({
     canUpload,
     currentCollection,
     gridColumnCount = 0,
-    maxGridColumnCount = 0,
-    minGridColumnCount = 0,
+    maxGridColumnCountForWidth = 0,
     onGridViewSliderChange = noop,
     isSmall,
     isTouch = false,
@@ -70,8 +68,7 @@ const SubHeader = ({
             gridColumnCount={gridColumnCount}
             isTouch={isTouch}
             viewMode={viewMode}
-            maxGridColumnCount={maxGridColumnCount}
-            minGridColumnCount={minGridColumnCount}
+            maxGridColumnCountForWidth={maxGridColumnCountForWidth}
             onGridViewSliderChange={onGridViewSliderChange}
             onCreate={onCreate}
             onViewModeChange={onViewModeChange}

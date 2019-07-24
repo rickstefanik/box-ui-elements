@@ -317,6 +317,9 @@ export const SIDEBAR_VIEW_METADATA: 'metadata' = 'metadata';
 export const SIDEBAR_VIEW_ACTIVITY: 'activity' = 'activity';
 export const SIDEBAR_VIEW_VERSIONS: 'versions' = 'versions';
 
+/* ------------------ Grid View ---------------------- */
+export const GRID_VIEW_MAX_COLUMNS: 7 = 7;
+
 /* ------------------ HTTP Requests ---------------------- */
 export const HTTP_GET: 'GET' = 'GET';
 export const HTTP_POST: 'POST' = 'POST';

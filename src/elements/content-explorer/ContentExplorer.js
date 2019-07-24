@@ -56,6 +56,7 @@ import {
     ERROR_CODE_ITEM_NAME_INVALID,
     ERROR_CODE_ITEM_NAME_TOO_LONG,
     TYPED_ID_FOLDER_PREFIX,
+    GRID_VIEW_MAX_COLUMNS,
 } from '../../constants';
 import type { ViewMode } from '../common/flowTypes';
 import '../common/fonts.scss';
@@ -65,8 +66,6 @@ import './ContentExplorer.scss';
 
 const DEFAULT_THUMBNAIL_DIMENSIONS = '1024x1024';
 const DEFAULT_GRID_VIEW_COLUMNS = 5;
-const MIN_GRID_VIEW_COLUMNS = 1;
-const MAX_GRID_VIEW_COLUMNS = 7;
 
 type Props = {
     apiHost: string,
@@ -128,7 +127,7 @@ type State = {
     isRenameModalOpen: boolean,
     isShareModalOpen: boolean,
     isUploadModalOpen: boolean,
-    maxGridColumnCount: number,
+    maxGridColumnCountForWidth: number,
     rootName: string,
     searchQuery: string,
     selected?: BoxItem,
@@ -240,7 +239,7 @@ class ContentExplorer extends Component<Props, State> {
             errorCode: '',
             focusedRow: 0,
             gridColumnCount: DEFAULT_GRID_VIEW_COLUMNS,
-            maxGridColumnCount: MAX_GRID_VIEW_COLUMNS,
+            maxGridColumnCountForWidth: GRID_VIEW_MAX_COLUMNS,
             isCreateFolderModalOpen: false,
             isDeleteModalOpen: false,
             isLoading: false,
@@ -1313,21 +1312,24 @@ class ContentExplorer extends Component<Props, State> {
     onGridViewSliderChange = (sliderValue: number): void => {
         // need to do this calculation since lowest value of grid view slider
         // means highest number of columns
-        const gridColumnCount = MAX_GRID_VIEW_COLUMNS - sliderValue + 1;
+        const gridColumnCount = GRID_VIEW_MAX_COLUMNS - sliderValue + 1;
         this.setState({ gridColumnCount });
     };
 
     /**
-     * Sets maxGridColumnCount and gridColumnCount properties of state based on width
+     * Sets maxGridColumnCountForWidth and gridColumnCount properties of state based on width
      * of GridView.
      *
-     * @param {number} maxGridColumnCount - maximum number of columns that can be displayed given
+     * @param {number} maxGridColumnCountForWidth - maximum number of columns that can be displayed given
      * the current width of the GridView.
      * @return {void}
      */
-    updateMaxColumns = (maxGridColumnCount: number) => {
+    onGridViewResize = (maxGridColumnCountForWidth: number) => {
         const { gridColumnCount } = this.state;
-        this.setState({ maxGridColumnCount, gridColumnCount: Math.min(gridColumnCount, maxGridColumnCount) });
+        this.setState({
+            maxGridColumnCountForWidth,
+            gridColumnCount: Math.min(gridColumnCount, maxGridColumnCountForWidth),
+        });
     };
 
     /**
@@ -1379,7 +1381,7 @@ class ContentExplorer extends Component<Props, State> {
             currentPageSize,
             searchQuery,
             gridColumnCount,
-            maxGridColumnCount,
+            maxGridColumnCountForWidth,
             isDeleteModalOpen,
             isRenameModalOpen,
             isShareModalOpen,
@@ -1422,8 +1424,7 @@ class ContentExplorer extends Component<Props, State> {
                             canUpload={allowUpload}
                             canCreateNewFolder={allowCreate}
                             gridColumnCount={gridColumnCount}
-                            maxGridColumnCount={maxGridColumnCount}
-                            minGridColumnCount={MIN_GRID_VIEW_COLUMNS}
+                            maxGridColumnCountForWidth={maxGridColumnCountForWidth}
                             onUpload={this.upload}
                             onCreate={this.createFolder}
                             onGridViewSliderChange={this.onGridViewSliderChange}
@@ -1457,8 +1458,8 @@ class ContentExplorer extends Component<Props, State> {
                             onItemPreview={this.preview}
                             onSortChange={this.sort}
                             gridColumnCount={gridColumnCount}
-                            maxGridColumnCount={maxGridColumnCount}
-                            updateMaxColumns={this.updateMaxColumns}
+                            maxGridColumnCountForWidth={maxGridColumnCountForWidth}
+                            onGridViewResize={this.onGridViewResize}
                         />
                         <Footer>
                             <Pagination

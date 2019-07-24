@@ -3,6 +3,7 @@ import * as React from 'react';
 import IconPlusThin from '../../icons/general/IconPlusThin';
 import IconMinusThin from '../../icons/general/IconMinusThin';
 import PlainButton from '../plain-button/PlainButton';
+import { GRID_VIEW_MAX_COLUMNS } from '../../constants';
 import { bdlNeutral03 } from '../../styles/variables';
 import './GridViewSlider.scss';
 
@@ -10,25 +11,23 @@ type Props = {
     columnCount: number,
     isTouch: boolean,
     maxColumnCount: number,
-    minColumnCount: number,
-    onChange: (newViewSize: number) => void,
+    onChange: (newSliderValue: number) => void,
 };
 
-const MAX_POSSIBLE_COLUMNS = 7;
-const RANGE_STEP = 1;
+const GridViewSlider = ({ columnCount, isTouch, maxColumnCount, onChange }: Props) => {
+    const GRID_VIEW_MIN_COLUMNS = 1;
+    const RANGE_STEP = 1;
+    const RANGE_MIN = GRID_VIEW_MAX_COLUMNS - maxColumnCount + 1;
+    const RANGE_MAX = GRID_VIEW_MAX_COLUMNS - GRID_VIEW_MIN_COLUMNS + 1;
 
-const GridViewSlider = ({ columnCount, isTouch, maxColumnCount, minColumnCount, onChange }: Props) => {
-    const RANGE_MIN = MAX_POSSIBLE_COLUMNS - maxColumnCount + 1;
-    const RANGE_MAX = MAX_POSSIBLE_COLUMNS - minColumnCount + 1;
-
-    const viewSize = RANGE_MAX - columnCount + 1;
+    const sliderValue = RANGE_MAX - columnCount + 1;
     return (
-        minColumnCount < maxColumnCount && (
+        GRID_VIEW_MIN_COLUMNS < maxColumnCount && (
             <div className="bdl-GridViewSlider">
                 <PlainButton
                     className="bdl-GridViewSlider-PlainButton bdl-GridViewSlider-PlainButton--minus"
                     onClick={() => {
-                        onChange(Math.max(RANGE_MIN, viewSize - RANGE_STEP));
+                        onChange(Math.max(RANGE_MIN, sliderValue - RANGE_STEP));
                     }}
                 >
                     <IconMinusThin color={bdlNeutral03} width={14} height={14} />
@@ -43,13 +42,13 @@ const GridViewSlider = ({ columnCount, isTouch, maxColumnCount, minColumnCount, 
                         }}
                         step={RANGE_STEP}
                         type="range"
-                        value={viewSize}
+                        value={sliderValue}
                     />
                 )}
                 <PlainButton
                     className="bdl-GridViewSlider-PlainButton bdl-GridViewSlider-PlainButton--plus"
                     onClick={() => {
-                        onChange(Math.min(RANGE_MAX, viewSize + RANGE_STEP));
+                        onChange(Math.min(RANGE_MAX, sliderValue + RANGE_STEP));
                     }}
                 >
                     <IconPlusThin color={bdlNeutral03} width={14} height={14} />

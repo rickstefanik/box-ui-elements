@@ -38,7 +38,7 @@ type Props = {
     isMedium: boolean,
     isSmall: boolean,
     isTouch: boolean,
-    maxGridColumnCount?: number,
+    onGridViewResize?: (maxGridColumnCountForWidth: number) => void,
     onItemClick: Function,
     onItemDelete: Function,
     onItemDownload: Function,
@@ -50,7 +50,6 @@ type Props = {
     rootElement?: HTMLElement,
     rootId: string,
     tableRef: Function,
-    updateMaxColumns?: (maxGridColumnCount: number) => void,
     view: View,
     viewMode?: ViewMode,
 };
@@ -60,10 +59,9 @@ const Content = ({
     focusedRow,
     gridColumnCount = 0,
     isMedium,
-    maxGridColumnCount = 0,
     onSortChange,
     tableRef,
-    updateMaxColumns = noop,
+    onGridViewResize = noop,
     view,
     viewMode = VIEW_MODE_LIST,
     ...rest
@@ -92,8 +90,7 @@ const Content = ({
                 <ItemGrid
                     currentCollection={currentCollection}
                     gridColumnCount={gridColumnCount}
-                    maxGridColumnCount={maxGridColumnCount}
-                    updateMaxColumns={updateMaxColumns}
+                    onGridViewResize={onGridViewResize}
                     view={view}
                     {...rest}
                 />

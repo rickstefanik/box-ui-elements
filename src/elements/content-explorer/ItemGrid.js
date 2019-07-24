@@ -5,24 +5,16 @@ import AutoSizer from 'react-virtualized/dist/es/AutoSizer';
 import GridView from '../../components/grid-view/GridView';
 import ItemGridCell from './ItemGridCell';
 import type { ItemGridProps } from './flowTypes';
+import { GRID_VIEW_MAX_COLUMNS } from '../../constants';
 
 type Props = {
     currentCollection: Collection,
     gridColumnCount: number,
-    maxGridColumnCount: number,
-    updateMaxColumns: (maxGridColumnCount: number) => void,
+    onGridViewResize: (maxGridColumnCountForWidth: number) => void,
     ...$Exact<ItemGridProps>,
 };
 
-const ItemGrid = ({
-    currentCollection,
-    gridColumnCount,
-    maxGridColumnCount,
-    onItemSelect,
-    rootId,
-    updateMaxColumns,
-    ...rest
-}: Props) => {
+const ItemGrid = ({ currentCollection, gridColumnCount, onItemSelect, rootId, onGridViewResize, ...rest }: Props) => {
     const ONE_COLUMN_BREAKPOINT = 700;
     const THREE_COLUMN_BREAKPOINT = 1300;
     const FIVE_COLUMN_BREAKPOINT = 1650;
@@ -39,14 +31,14 @@ const ItemGrid = ({
     };
 
     /**
-     * Calls updateMaxColumns with the max number of columns that can be displayed given
+     * Calls onGridViewResize with the max number of columns that can be displayed given
      * the current width of the GridView.
      *
-     * @param {height: number, width: number} dimensions - current dimensions, as given by AutoSizer
+     * @param {height: number, width: number} dimensions - current dimensions of GridView, as given by AutoSizer
      * @return {void}
      */
     const onResize = ({ width }): void => {
-        let maxColumns = 7;
+        let maxColumns = GRID_VIEW_MAX_COLUMNS;
         if (width < ONE_COLUMN_BREAKPOINT) {
             maxColumns = 1;
         } else if (width < THREE_COLUMN_BREAKPOINT) {
@@ -54,7 +46,7 @@ const ItemGrid = ({
         } else if (width < FIVE_COLUMN_BREAKPOINT) {
             maxColumns = 5;
         }
-        updateMaxColumns(maxColumns);
+        onGridViewResize(maxColumns);
     };
 
     return (
