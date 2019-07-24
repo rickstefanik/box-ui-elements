@@ -6,14 +6,14 @@
     margin-right: 2px;
 }
 
-@mixin base-range-slider-track {
+@mixin bdl-GridViewSlider-Track {
     background: $bdl-gray-10;
     border: none;
     border-radius: 2px;
     height: 2px;
 }
 
-@mixin base-range-slider-thumb {
+@mixin bdl-GridViewSlider-Thumb {
     background: $bdl-gray-80;
     border: none;
     border-radius: 50%;
@@ -30,11 +30,11 @@
     margin-right: 7px;
 
     &::-webkit-slider-runnable-track {
-        @include base-range-slider-track;
+        @include bdl-GridViewSlider-Track;
     }
 
     &::-webkit-slider-thumb {
-        @include base-range-slider-thumb;
+        @include bdl-GridViewSlider-Thumb;
 
         appearance: none;
         margin-top: -4px;
@@ -42,15 +42,15 @@
     }
 
     &::-moz-range-track {
-        @include base-range-slider-track;
+        @include bdl-GridViewSlider-Track;
     }
 
     &::-moz-range-thumb {
-        @include base-range-slider-thumb;
+        @include bdl-GridViewSlider-Thumb;
     }
 
     &::-ms-track {
-        @include base-range-slider-track;
+        @include bdl-GridViewSlider-Track;
 
         color: transparent;
     }
@@ -66,7 +66,7 @@
     }
 
     &::-ms-thumb {
-        @include base-range-slider-thumb;
+        @include bdl-GridViewSlider-Thumb;
     }
 
     /* hide the outline behind the border */
@@ -89,13 +89,15 @@
 }
 
 .btn-plain {
-    &.bdl-GridViewSlider-MinusButton {
+    &.bdl-GridViewSlider-PlainButton {
         display: flex;
-        margin-right: 4px;
-    }
 
-    &.bdl-GridViewSlider-PlusButton {
-        display: flex;
-        margin-left: 4px;
+        &.bdl-GridViewSlider-PlainButton--minus {
+            margin-right: 4px;
+        }
+
+        &.bdl-GridViewSlider-PlainButton--plus {
+            margin-left: 4px;
+        }
     }
 }

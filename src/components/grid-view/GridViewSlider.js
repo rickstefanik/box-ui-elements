@@ -26,7 +26,7 @@ const GridViewSlider = ({ columnCount, isTouch, maxColumnCount, minColumnCount, 
         minColumnCount < maxColumnCount && (
             <div className="bdl-GridViewSlider">
                 <PlainButton
-                    className="bdl-GridViewSlider-MinusButton"
+                    className="bdl-GridViewSlider-PlainButton bdl-GridViewSlider-PlainButton--minus"
                     onClick={() => {
                         onChange(Math.max(RANGE_MIN, viewSize - RANGE_STEP));
                     }}
@@ -47,7 +47,7 @@ const GridViewSlider = ({ columnCount, isTouch, maxColumnCount, minColumnCount, 
                     />
                 )}
                 <PlainButton
-                    className="bdl-GridViewSlider-PlusButton"
+                    className="bdl-GridViewSlider-PlainButton bdl-GridViewSlider-PlainButton--plus"
                     onClick={() => {
                         onChange(Math.min(RANGE_MAX, viewSize + RANGE_STEP));
                     }}
