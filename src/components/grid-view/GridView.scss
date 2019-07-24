@@ -58,6 +58,10 @@
     }
 }
 
+.bdl-GridView-body {
+    outline: none;
+}
+
 .bdl-GridView-row {
     display: flex;
     justify-content: flex-start;

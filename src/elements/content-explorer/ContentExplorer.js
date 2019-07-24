@@ -1325,10 +1325,8 @@ class ContentExplorer extends Component<Props, State> {
      * @return {void}
      */
     onGridViewResize = (maxGridColumnCountForWidth: number) => {
-        const { gridColumnCount } = this.state;
         this.setState({
             maxGridColumnCountForWidth,
-            gridColumnCount: Math.min(gridColumnCount, maxGridColumnCountForWidth),
         });
     };
 
@@ -1457,7 +1455,7 @@ class ContentExplorer extends Component<Props, State> {
                             onItemShare={this.share}
                             onItemPreview={this.preview}
                             onSortChange={this.sort}
-                            gridColumnCount={gridColumnCount}
+                            gridColumnCount={Math.min(gridColumnCount, maxGridColumnCountForWidth)}
                             maxGridColumnCountForWidth={maxGridColumnCountForWidth}
                             onGridViewResize={this.onGridViewResize}
                         />
