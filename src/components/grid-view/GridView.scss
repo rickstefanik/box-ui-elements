@@ -12,7 +12,7 @@
     }
 
     &.bdl-GridView--columns-2 .bdl-GridView-slot {
-        $columns2prct: calc(50% - 10px); /* 100%/3 - 10px */
+        $columns2prct: calc(50% - 10px); /* 100%/2 - 10px */
 
         flex-basis: $columns2prct;
         max-width: $columns2prct;
@@ -26,7 +26,7 @@
     }
 
     &.bdl-GridView--columns-4 .bdl-GridView-slot {
-        $columns4prct: calc(25% - 10px); /* 100%/3 - 10px */
+        $columns4prct: calc(25% - 10px); /* 100%/4 - 10px */
 
         flex-basis: $columns4prct;
         max-width: $columns4prct;
@@ -40,7 +40,7 @@
     }
 
     &.bdl-GridView--columns-6 .bdl-GridView-slot {
-        $columns6prct: calc(16.6666% - 10px); /* 100%/3 - 10px */
+        $columns6prct: calc(16.6666% - 10px); /* 100%/6 - 10px */
 
         flex-basis: $columns6prct;
         max-width: $columns6prct;
