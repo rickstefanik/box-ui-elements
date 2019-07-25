@@ -93,4 +93,12 @@
 
 .bdl-GridView-tableRow {
     border: none;
+
+    &:first-child .bdl-GridView-slot {
+        margin-top: 10px;
+    }
+
+    &:last-child .bdl-GridView-slot {
+        margin-bottom: 10px;
+    }
 }

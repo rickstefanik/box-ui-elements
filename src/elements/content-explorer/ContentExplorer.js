@@ -65,7 +65,7 @@ import '../common/modal.scss';
 import './ContentExplorer.scss';
 
 const DEFAULT_THUMBNAIL_DIMENSIONS = '1024x1024';
-const DEFAULT_GRID_VIEW_COLUMNS = 5;
+const DEFAULT_GRID_VIEW_COLUMNS = 4;
 
 type Props = {
     apiHost: string,
