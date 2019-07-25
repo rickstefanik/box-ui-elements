@@ -9,12 +9,15 @@
     align-items: center;
     display: flex;
     justify-content: space-between;
-    padding: 5px 10px;
+    padding-bottom: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
 }
 
 .bce-ItemGridCell-itemThumbnail {
     background-color: $bdl-gray-02;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     // padding is used to maintain cell's aspect ratio on resize of container
     padding-bottom: 65%;
     position: relative;

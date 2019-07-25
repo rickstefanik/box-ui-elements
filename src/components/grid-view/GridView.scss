@@ -56,6 +56,10 @@
     .ReactVirtualized__Table__rowColumn:first-of-type {
         margin: 0;
     }
+
+    & .bce-btn-more-options {
+        padding: 4px 10px;
+    }
 }
 
 .bdl-GridView-body {
