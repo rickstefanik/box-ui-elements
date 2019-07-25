@@ -5,7 +5,7 @@
     padding: 0 5px;
 
     &.bdl-GridView--columns-1 .bdl-GridView-slot {
-        $columns1prct: 100%;
+        $columns1prct: calc(100% - 10px);
 
         flex-basis: $columns1prct;
         max-width: $columns1prct;
@@ -88,6 +88,10 @@
 
     &.bdl-GridView-slot--selected {
         border-color: $bdl-box-blue-50;
+    }
+
+    &:first-child {
+        margin-left: 2px;
     }
 
     & + & {

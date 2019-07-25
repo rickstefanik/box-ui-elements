@@ -10,7 +10,7 @@ import Add from './Add';
 import GridViewSlider from '../../../components/grid-view/GridViewSlider';
 import ViewModeChangeButton from './ViewModeChangeButton';
 import { FeatureFlag } from '../feature-checking';
-import { VIEW_FOLDER } from '../../../constants';
+import { VIEW_FOLDER, VIEW_MODE_GRID } from '../../../constants';
 import type { ViewMode } from '../flowTypes';
 import './SubHeaderRight.scss';
 
@@ -56,7 +56,7 @@ const SubHeaderRight = ({
     return (
         <div className="be-sub-header-right">
             <FeatureFlag feature="contentExplorer.gridView.enabled">
-                {showGridSlider && (
+                {showGridSlider && viewMode === VIEW_MODE_GRID && (
                     <GridViewSlider
                         columnCount={gridColumnCount}
                         isTouch={isTouch}
